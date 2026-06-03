@@ -11,13 +11,16 @@
 <body>
   <header>
     <h1>Hackney School Heat Vulnerability Dashboard</h1>
-    <p>A prototype tool for identifying schools most vulnerable to extreme heat and linking them to short-term response actions.</p>
+    <p>
+      A prototype decision-support tool for identifying Hackney schools most vulnerable to extreme heat.
+      Use the sliders and filters to test how different policy priorities affect school rankings.
+    </p>
   </header>
 
   <section class="cards">
     <div class="card">
       <h2 id="school-count">0</h2>
-      <p>Schools assessed</p>
+      <p>Schools shown</p>
     </div>
     <div class="card">
       <h2 id="very-high-count">0</h2>
@@ -34,6 +37,45 @@
   </section>
 
   <main class="dashboard">
+    <section class="control-panel">
+      <h2>Priority Controls</h2>
+      <p class="small">
+        Move the sliders to test different policy priorities. Higher weight means that factor matters more in the final vulnerability score.
+      </p>
+
+      <label>Overheating risk weight: <strong id="overheatingWeightValue">25</strong>%</label>
+      <input type="range" id="overheatingWeight" min="0" max="50" value="25">
+
+      <label>Tree canopy / shade weight: <strong id="canopyWeightValue">15</strong>%</label>
+      <input type="range" id="canopyWeight" min="0" max="40" value="15">
+
+      <label>Major road exposure weight: <strong id="roadWeightValue">15</strong>%</label>
+      <input type="range" id="roadWeight" min="0" max="40" value="15">
+
+      <label>Water access weight: <strong id="waterWeightValue">15</strong>%</label>
+      <input type="range" id="waterWeight" min="0" max="40" value="15">
+
+      <label>Preparedness weight: <strong id="preparednessWeightValue">20</strong>%</label>
+      <input type="range" id="preparednessWeight" min="0" max="40" value="20">
+
+      <label>Travel exposure weight: <strong id="travelWeightValue">10</strong>%</label>
+      <input type="range" id="travelWeight" min="0" max="30" value="10">
+
+      <hr>
+
+      <h3>Filters</h3>
+
+      <label class="checkbox-label">
+        <input type="checkbox" id="showOnlyHighRisk">
+        Show only high / very high risk schools
+      </label>
+
+      <label>Minimum score: <strong id="minScoreValue">0</strong></label>
+      <input type="range" id="minScore" min="0" max="100" value="0">
+
+      <button id="resetButton">Reset controls</button>
+    </section>
+
     <section class="map-section">
       <h2>School Vulnerability Map</h2>
       <div id="map"></div>
@@ -49,7 +91,7 @@
     <section class="side-panel">
       <h2>Selected School</h2>
       <div id="school-details">
-        <p>Click a school marker on the map to view its heat vulnerability profile.</p>
+        <p>Click a school marker or table row to view its heat vulnerability profile.</p>
       </div>
     </section>
   </main>
@@ -90,14 +132,15 @@
 
   <section class="ranking">
     <h2>School Vulnerability Ranking</h2>
+    <p class="small">The ranking updates automatically when slider weights or filters are changed.</p>
     <table id="ranking-table">
       <thead>
         <tr>
           <th>Rank</th>
           <th>School</th>
-          <th>Score</th>
+          <th>Updated score</th>
           <th>Risk level</th>
-          <th>Main issue</th>
+          <th>Top driver</th>
           <th>Priority action</th>
         </tr>
       </thead>

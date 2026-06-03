@@ -17,7 +17,7 @@ header h1 {
 
 header p {
   margin: 0;
-  max-width: 900px;
+  max-width: 1000px;
   line-height: 1.5;
 }
 
@@ -28,10 +28,15 @@ header p {
   padding: 24px 40px;
 }
 
-.card {
+.card,
+.control-panel,
+.map-section,
+.side-panel,
+.response-plan,
+.ranking {
   background: white;
-  padding: 20px;
   border-radius: 12px;
+  padding: 20px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
@@ -47,28 +52,52 @@ header p {
 
 .dashboard {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 320px 2fr 1fr;
   gap: 24px;
   padding: 0 40px 24px 40px;
 }
 
-.map-section,
-.side-panel,
-.response-plan,
-.ranking {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-}
-
 #map {
-  height: 540px;
+  height: 560px;
   border-radius: 10px;
 }
 
-.side-panel {
-  min-height: 540px;
+.control-panel label {
+  display: block;
+  margin: 14px 0 6px;
+  line-height: 1.4;
+}
+
+.control-panel input[type="range"] {
+  width: 100%;
+}
+
+.checkbox-label {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-panel button {
+  margin-top: 18px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #203040;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.control-panel button:hover {
+  opacity: 0.9;
+}
+
+.small {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.45;
 }
 
 .school-name {
@@ -143,20 +172,27 @@ th {
   background: #eef1f4;
 }
 
-@media (max-width: 900px) {
+#ranking-table tbody tr {
+  cursor: pointer;
+}
+
+#ranking-table tbody tr:hover {
+  background: #f3f6fa;
+}
+
+@media (max-width: 1100px) {
   .cards,
   .dashboard {
     grid-template-columns: 1fr;
   }
 
-  .cards {
+  .cards,
+  .dashboard {
     padding: 20px;
   }
 
-  .dashboard,
   .response-plan,
   .ranking {
-    margin: 0;
-    padding: 20px;
+    margin: 0 20px 24px 20px;
   }
 }
