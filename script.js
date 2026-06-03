@@ -1,18 +1,18 @@
 // =======================================
 // Hackney School Heat Vulnerability Dashboard
-// Clean beginner version
+// Fixed clean version
 // =======================================
 
-// 1. Create the map and centre it on Hackney
+// Create the map and centre it on Hackney
 const map = L.map("map").setView([51.545, -0.055], 13);
 
-// 2. Add the background map tiles
+// Add the background map tiles
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
   attribution: "© OpenStreetMap contributors"
 }).addTo(map);
 
-// 3. Add an approximate Hackney focus circle
+// Add an approximate Hackney focus circle
 const hackneyCircle = L.circle([51.545, -0.055], {
   radius: 3500,
   color: "#2563eb",
@@ -24,10 +24,7 @@ const hackneyCircle = L.circle([51.545, -0.055], {
 
 hackneyCircle.bindPopup("Approximate Hackney focus area");
 
-// 4. Example school data
-// Replace these example schools with your real Hackney schools later.
-// For now, keep this data so the dashboard can load properly.
-
+// Example school data
 const schools = [
   {
     school_name: "Example Primary School A",
@@ -76,8 +73,6 @@ const schools = [
   }
 ];
 
-// 5. Choose marker color based on risk level
-
 function getColor(riskLevel) {
   if (riskLevel === "Very High") return "#c62828";
   if (riskLevel === "High") return "#ef6c00";
@@ -85,13 +80,9 @@ function getColor(riskLevel) {
   return "#2e7d32";
 }
 
-// 6. Convert risk level into CSS class name
-
 function getBadgeClass(riskLevel) {
   return riskLevel.toLowerCase().replace(" ", "-");
 }
-
-// 7. Show school details in the right-side panel
 
 function showSchoolDetails(school) {
   const details = document.getElementById("school-details");
@@ -104,8 +95,6 @@ function showSchoolDetails(school) {
     <p><strong>Priority action:</strong> ${school.priority_action}</p>
   `;
 }
-
-// 8. Add school markers to the map
 
 schools.forEach((school) => {
   const marker = L.circleMarker([school.latitude, school.longitude], {
@@ -128,8 +117,6 @@ schools.forEach((school) => {
   });
 });
 
-// 9. Fill in the summary cards
-
 const schoolCount = schools.length;
 
 const veryHighCount = schools.filter(
@@ -148,8 +135,6 @@ document.getElementById("school-count").textContent = schoolCount;
 document.getElementById("very-high-count").textContent = veryHighCount;
 document.getElementById("average-score").textContent = averageScore;
 document.getElementById("priority-count").textContent = priorityCount;
-
-// 10. Create the ranking table
 
 const rankingTableBody = document.querySelector("#ranking-table tbody");
 
