@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hackney School Heat Vulnerability Dashboard</title>
+
+  <!-- Leaflet map library -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <h1>Hackney School Heat Vulnerability Dashboard</h1>
+    <p>
+      A prototype tool for identifying schools most vulnerable to extreme heat and linking them to short-term response actions.
+    </p>
+  </header>
+
+  <section class="cards">
+    <div class="card">
+      <h2 id="school-count">0</h2>
+      <p>Schools assessed</p>
+    </div>
+    <div class="card">
+      <h2 id="very-high-count">0</h2>
+      <p>Very high risk schools</p>
+    </div>
+    <div class="card">
+      <h2 id="average-score">0</h2>
+      <p>Average score</p>
+    </div>
+    <div class="card">
+      <h2 id="priority-count">0</h2>
+      <p>Priority schools</p>
+    </div>
+  </section>
+
+  <main class="dashboard">
+    <section class="map-section">
+      <h2>School Vulnerability Map</h2>
+      <div id="map"></div>
+      <div class="legend">
+        <strong>Risk level</strong>
+        <span><i class="low"></i> Low</span>
+        <span><i class="moderate"></i> Moderate</span>
+        <span><i class="high"></i> High</span>
+        <span><i class="very-high"></i> Very High</span>
+      </div>
+    </section>
+
+    <section class="side-panel">
+      <h2>Selected School</h2>
+      <div id="school-details">
+        <p>Click a school marker on the map to view its heat vulnerability profile.</p>
+      </div>
+    </section>
+  </main>
+
+  <section class="response-plan">
+    <h2>Temperature-Triggered Response Plan</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Temperature threshold</th>
+          <th>Recommended response</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>26°C+</td>
+          <td>Hydration reminders, shaded breaks, check classroom ventilation.</td>
+        </tr>
+        <tr>
+          <td>28°C+</td>
+          <td>Move PE and outdoor activities away from 11am–3pm.</td>
+        </tr>
+        <tr>
+          <td>30°C+</td>
+          <td>Water breaks every 30 minutes and use cooled rooms where available.</td>
+        </tr>
+        <tr>
+          <td>32°C+</td>
+          <td>Restrict outdoor activities and check vulnerable pupils.</td>
+        </tr>
+        <tr>
+          <td>35°C+</td>
+          <td>Activate emergency heat protocol and consider remote/flexible learning for vulnerable pupils.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="ranking">
+    <h2>School Vulnerability Ranking</h2>
+    <table id="ranking-table">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>School</th>
+          <th>Score</th>
+          <th>Risk level</th>
+          <th>Main issue</th>
+          <th>Priority action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- Libraries -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

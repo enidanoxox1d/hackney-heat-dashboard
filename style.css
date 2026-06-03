@@ -1,0 +1,162 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f6f7f8;
+  color: #222;
+}
+
+header {
+  background: #203040;
+  color: white;
+  padding: 28px 40px;
+}
+
+header h1 {
+  margin: 0 0 8px 0;
+}
+
+header p {
+  margin: 0;
+  max-width: 900px;
+  line-height: 1.5;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 24px 40px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.card p {
+  margin: 6px 0 0 0;
+  color: #666;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  padding: 0 40px 24px 40px;
+}
+
+.map-section,
+.side-panel,
+.response-plan,
+.ranking {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+#map {
+  height: 540px;
+  border-radius: 10px;
+}
+
+.side-panel {
+  min-height: 540px;
+}
+
+.school-name {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.score {
+  font-size: 34px;
+  font-weight: bold;
+  margin: 12px 0;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: white;
+  font-weight: bold;
+}
+
+.badge.low { background: #2e7d32; }
+.badge.moderate { background: #f9a825; color: #222; }
+.badge.high { background: #ef6c00; }
+.badge.very-high { background: #c62828; }
+
+.legend {
+  margin-top: 14px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend i {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.legend .low { background: #2e7d32; }
+.legend .moderate { background: #f9a825; }
+.legend .high { background: #ef6c00; }
+.legend .very-high { background: #c62828; }
+
+.response-plan,
+.ranking {
+  margin: 0 40px 24px 40px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #eef1f4;
+}
+
+@media (max-width: 900px) {
+  .cards,
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .cards {
+    padding: 20px;
+  }
+
+  .dashboard,
+  .response-plan,
+  .ranking {
+    margin: 0;
+    padding: 20px;
+  }
+}
