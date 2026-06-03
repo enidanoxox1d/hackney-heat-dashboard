@@ -21,6 +21,7 @@ header p {
   line-height: 1.5;
 }
 
+/* Summary cards */
 .cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -50,32 +51,50 @@ header p {
   color: #666;
 }
 
+/* Main 3-column dashboard layout */
 .dashboard {
   display: grid;
-  grid-template-columns: 320px 2fr 1fr;
+  grid-template-columns: 280px minmax(500px, 1.5fr) minmax(300px, 0.9fr);
   gap: 24px;
   padding: 0 40px 24px 40px;
+  align-items: stretch;
 }
 
-#map {
-  height: 560px;
-  border-radius: 10px;
+/* Keep all three top boxes visually aligned */
+.control-panel,
+.map-section,
+.side-panel {
+  min-height: 560px;
+}
+
+/* Make the controls narrower and vertical */
+.control-panel h2,
+.map-section h2,
+.side-panel h2 {
+  margin-top: 0;
 }
 
 .control-panel label {
   display: block;
   margin: 14px 0 6px;
-  line-height: 1.4;
+  line-height: 1.35;
+  font-size: 14px;
 }
 
 .control-panel input[type="range"] {
   width: 100%;
+  display: block;
 }
 
 .checkbox-label {
   display: flex !important;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
+  margin-top: 12px;
+}
+
+.checkbox-label input {
+  margin-top: 3px;
 }
 
 .control-panel button {
@@ -95,11 +114,45 @@ header p {
 }
 
 .small {
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
   line-height: 1.45;
 }
 
+/* Map */
+#map {
+  height: 500px;
+  border-radius: 10px;
+}
+
+.legend {
+  margin-top: 14px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 14px;
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend i {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.legend .low { background: #2e7d32; }
+.legend .moderate { background: #f9a825; }
+.legend .high { background: #ef6c00; }
+.legend .very-high { background: #c62828; }
+
+/* Selected school */
 .school-name {
   font-size: 22px;
   margin-bottom: 6px;
@@ -124,32 +177,7 @@ header p {
 .badge.high { background: #ef6c00; }
 .badge.very-high { background: #c62828; }
 
-.legend {
-  margin-top: 14px;
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.legend span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.legend i {
-  width: 14px;
-  height: 14px;
-  display: inline-block;
-  border-radius: 50%;
-}
-
-.legend .low { background: #2e7d32; }
-.legend .moderate { background: #f9a825; }
-.legend .high { background: #ef6c00; }
-.legend .very-high { background: #c62828; }
-
+/* Lower sections */
 .response-plan,
 .ranking {
   margin: 0 40px 24px 40px;
@@ -180,19 +208,46 @@ th {
   background: #f3f6fa;
 }
 
-@media (max-width: 1100px) {
-  .cards,
+/* Medium screens: controls on top, map and selected side by side */
+@media (max-width: 1250px) {
   .dashboard {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .control-panel {
+    grid-column: 1 / -1;
+    min-height: auto;
+  }
+
+  .map-section,
+  .side-panel {
+    min-height: 520px;
+  }
+}
+
+/* Small screens: everything stacked */
+@media (max-width: 850px) {
+  header {
+    padding: 24px 20px;
   }
 
   .cards,
   .dashboard {
+    grid-template-columns: 1fr;
     padding: 20px;
   }
 
   .response-plan,
   .ranking {
     margin: 0 20px 24px 20px;
+  }
+
+  .map-section,
+  .side-panel {
+    min-height: auto;
+  }
+
+  #map {
+    height: 420px;
   }
 }
