@@ -777,3 +777,30 @@
   border: 1px solid rgba(20,35,31,.08);
   font-size: 12.5px;
 }
+
+/* Simplified selected-school profile: focus on qualitative category explanations */
+.insight-summary-box {
+  display: none !important;
+}
+
+.category-insight-card .insight-value {
+  display: none !important;
+}
+
+.category-insight-card {
+  padding: 22px 22px 22px 26px;
+}
+
+.category-insight-card strong {
+  margin-bottom: 12px;
+}
+
+.category-insight-card p {
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.selected-school-block p {
+  color: var(--ink-soft);
+  line-height: 1.65;
+}

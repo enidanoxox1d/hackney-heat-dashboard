@@ -341,9 +341,35 @@ function getNextStepText(score, weakestCategoryName) {
 }
 
 
+
+function getCategoryDetailedExplanation(category, value, score) {
+  const status = getCategoryStatus(value);
+
+  const explanations = {
+    "Environment": {
+      "Clear strength": "This suggests the school’s surrounding outdoor environment is helping reduce heat risk. Features such as tree canopy, green space, shade, or lower surface temperature may be supporting a cooler school setting.",
+      "Helpful factor": "This suggests the outdoor environment is providing some heat protection, but not enough to fully remove concern. The school may still benefit from more shade, planting, or cooling landscape improvements.",
+      "Mixed / neutral": "This means the environmental factors are not strongly helping or harming the school’s score. Some conditions may be protective, while others may still create heat exposure around the site.",
+      "Needs attention": "This suggests the surrounding environment may be increasing heat exposure. The school may need closer review of tree canopy, nearby green space, shaded areas, and local surface temperature."
+    },
+    "Built Environment": {
+      "Clear strength": "This suggests the school building itself is supporting heat resilience. Ventilation, shading, cooling spaces, roof treatment, or classroom design may be helping reduce overheating risk.",
+      "Helpful factor": "This suggests the building has some useful heat-resilience features, but there may still be gaps. Further checks on ventilation, classroom overheating, roof treatment, and cooling spaces would be useful.",
+      "Mixed / neutral": "This means the building-related picture is balanced. Some facilities may help during hot weather, but other spaces may still be vulnerable to overheating.",
+      "Needs attention": "This suggests building conditions may be a major source of heat risk. Ventilation, shading, roof treatment, cooling provision, and overheated classrooms should be reviewed first."
+    },
+    "Socio-economic / Preparedness": {
+      "Clear strength": "This suggests the school has stronger preparedness capacity. Staff training, communication, heat-response planning, water access, or support for vulnerable pupils may be helping the school respond to hot weather.",
+      "Helpful factor": "This suggests the school has some preparedness measures in place, but routines may still need strengthening. Clearer heatwave procedures, communication, and staff guidance could improve resilience.",
+      "Mixed / neutral": "This means preparedness is not clearly strong or weak. Some actions may already exist, but the school may still need more consistent planning for hot days.",
+      "Needs attention": "This suggests preparedness may be a key gap. The school may need stronger staff training, pupil communication, water access planning, and procedures for vulnerable pupils during heat events."
+    }
+  };
+
+  return explanations[category][status];
+}
+
 function showSchoolDetails(school) {
-  const strongest = getMostPositiveCategory(school.categoryTotals);
-  const weakest = getWeakestCategory(school.categoryTotals);
   const categories = ["Environment", "Built Environment", "Socio-economic / Preparedness"];
 
   document.getElementById("school-details").innerHTML = `
@@ -356,27 +382,21 @@ function showSchoolDetails(school) {
       <p class="selected-school-summary">${getPlainScoreMeaning(school.resilienceScore)}</p>
     </div>
 
-    <div class="insight-summary-box">
-      <div>
-        <span>Main takeaway</span>
-        <strong>${school.resilienceScore <= 50 ? "Priority for support" : school.resilienceScore <= 75 ? "Monitor and improve" : "Currently lower priority"}</strong>
-        <p>Lower scores mean higher concern. This school is currently classified as <strong>${school.interpretation}</strong>.</p>
-      </div>
-      <div>
-        <span>Strongest area</span>
-        <strong>${getCategoryDisplayName(strongest[0])}</strong>
-        <p>This category contributes ${formatSignedValue(strongest[1])} to the overall score.</p>
-      </div>
-      <div>
-        <span>First area to check</span>
-        <strong>${getCategoryDisplayName(weakest[0])}</strong>
-        <p>${getNextStepText(school.resilienceScore, getCategoryDisplayName(weakest[0]))}</p>
-      </div>
+    <div class="selected-school-block">
+      <h4>What this means</h4>
+      <p>
+        This score gives a quick overall view of the school’s heat-resilience position.
+        A lower score means the school may need more urgent support, while a higher score suggests stronger current preparedness.
+        The three category cards below explain what may be driving the result.
+      </p>
     </div>
 
     <div class="selected-school-block">
       <h4>Category snapshot</h4>
-      <p class="category-intro">These cards explain what each category is doing to the school’s overall heat-resilience score.</p>
+      <p class="category-intro">
+        Each card translates the score into plain language, so users can understand whether the issue is mainly about the surrounding environment,
+        the school building, or preparedness and support systems.
+      </p>
       <div class="category-insight-grid">
         ${categories.map(category => {
           const value = school.categoryTotals[category];
@@ -384,8 +404,7 @@ function showSchoolDetails(school) {
             <div class="category-insight-card ${getCategoryCardClass(category)}">
               <span class="insight-kicker">${getCategoryDisplayName(category)}</span>
               <strong>${getCategoryStatus(value)}</strong>
-              <p>${getCategoryPlainMeaning(category, value)}</p>
-              <div class="insight-value">Contribution to score: ${formatSignedValue(value)}</div>
+              <p>${getCategoryDetailedExplanation(category, value, school.resilienceScore)}</p>
             </div>
           `;
         }).join("")}
