@@ -12,10 +12,13 @@
     <div class="header-meta">Climate Future Lab Group 3 · Track 1 London 2030</div>
     <h1>Hackney School Heat Vulnerability Dashboard</h1>
     <p>A decision-support prototype for schools to input heat-risk data, calculate a net vulnerability score, and visualise priority schools across Hackney.</p>
-    <nav class="page-tabs">
-      <button class="tab-button active" id="inputTabButton">School Data Input</button>
-      <button class="tab-button" id="mapTabButton">Map Dashboard</button>
-    </nav>
+    <div class="perspective-wrapper">
+      <label for="perspectiveSelect" class="perspective-label">Active Perspective:</label>
+      <select id="perspectiveSelect" class="perspective-select">
+        <option value="input">Step 1: 📝 School Data Input</option>
+        <option value="map">Step 2: 🗺️ Map Dashboard</option>
+      </select>
+    </div>
   </header>
 
   <section class="cards">
