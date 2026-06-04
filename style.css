@@ -703,3 +703,22 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Fix criteria accordion item-count position */
+.criteria-accordion summary {
+  justify-content: flex-start !important;
+}
+
+.criteria-summary-text {
+  flex: 1 1 auto;
+}
+
+.criteria-summary-meta {
+  margin-left: auto;
+  margin-right: 14px;
+}
+
+.criteria-accordion summary::after {
+  margin-left: 0;
+}
