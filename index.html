@@ -80,42 +80,63 @@
         <h2>How to Read the Score</h2>
         <p>This dashboard combines school inputs into one overall <strong>Net Heat Resilience Score</strong>. It is designed to give users a quick view of which schools may need the most heat-resilience support.</p>
 
-        <div class="method-explain-grid">
-          <div class="method-card">
-            <h3>What the main score means</h3>
-            <ul class="method-list">
-              <li><strong>76–100:</strong> Strong heat resilience</li>
-              <li><strong>51–75:</strong> Moderate / improving</li>
-              <li><strong>26–50:</strong> High concern</li>
-              <li><strong>0–25:</strong> Very high concern</li>
-            </ul>
-            <p class="small">Higher values mean the school appears more prepared for heat risk. Lower values mean higher concern and greater priority for support.</p>
-          </div>
+        <div class="accordion-group">
+          <details class="accordion-item" open>
+            <summary>
+              <div>
+                <strong>What the main score means</strong>
+                <span>Click to expand or collapse</span>
+              </div>
+            </summary>
+            <div class="accordion-content">
+              <ul class="method-list">
+                <li><strong>76–100:</strong> Strong heat resilience</li>
+                <li><strong>51–75:</strong> Moderate / improving</li>
+                <li><strong>26–50:</strong> High concern</li>
+                <li><strong>0–25:</strong> Very high concern</li>
+              </ul>
+              <p class="small">Higher values mean the school appears more prepared for heat risk. Lower values mean higher concern and greater priority for support.</p>
+            </div>
+          </details>
 
-          <div class="method-card">
-            <h3>What the three category scores mean</h3>
-            <ul class="method-list">
-              <li><strong>Environment:</strong> surrounding heat exposure, tree canopy, green space, and local temperature conditions.</li>
-              <li><strong>Built Environment:</strong> building features such as ventilation, shading, roof treatment, water access, and cooling provision.</li>
-              <li><strong>Socio-economic / Preparedness:</strong> training, communication, operational planning, and wider school preparedness.</li>
-            </ul>
-            <p class="small">These coloured boxes show how each category is affecting the school's overall score. More negative values mean that category is currently dragging the score down.</p>
-          </div>
-        </div>
+          <details class="accordion-item">
+            <summary>
+              <div>
+                <strong>What the three category scores mean</strong>
+                <span>Click to expand or collapse</span>
+              </div>
+            </summary>
+            <div class="accordion-content">
+              <ul class="method-list">
+                <li><strong>Environment:</strong> surrounding heat exposure, tree canopy, green space, and local temperature conditions.</li>
+                <li><strong>Built Environment:</strong> building features such as ventilation, shading, roof treatment, water access, and cooling provision.</li>
+                <li><strong>Socio-economic / Preparedness:</strong> training, communication, operational planning, and wider school preparedness.</li>
+              </ul>
+              <p class="small">These coloured boxes show how each category is affecting the school's overall score. More negative values mean that category is currently dragging the score down.</p>
+            </div>
+          </details>
 
-        <div class="method-card wide">
-          <h3>How the score is calculated</h3>
-          <ol class="method-steps">
-            <li>Each criterion is scored using the index rules. <strong>Negative criteria</strong> use <strong>0, -0.5, or -1</strong>. <strong>Positive criteria</strong> use <strong>0, 0.5, or 1</strong>.</li>
-            <li>Each criterion score is multiplied by its <strong>weight</strong> to create a contribution.</li>
-            <li>Contributions are added within the three categories and then combined into a <strong>Final Raw Score</strong>.</li>
-            <li>The raw score is then converted into the <strong>Net Heat Resilience Score (0–100)</strong> shown on the left.</li>
-          </ol>
-          <div class="formula-row">
-            <div class="formula-card"><strong>Contribution</strong><code>Weight × Score</code></div>
-            <div class="formula-card"><strong>Final Raw Score</strong><code>Total Positive Score + Total Negative Score</code></div>
-            <div class="formula-card"><strong>Net Heat Resilience Score</strong><code>(Final Raw Score + 0.5) × 100</code></div>
-          </div>
+          <details class="accordion-item">
+            <summary>
+              <div>
+                <strong>How the score is calculated</strong>
+                <span>Click to expand or collapse</span>
+              </div>
+            </summary>
+            <div class="accordion-content">
+              <ol class="method-steps">
+                <li>Each criterion is scored using the index rules. <strong>Negative criteria</strong> use <strong>0, -0.5, or -1</strong>. <strong>Positive criteria</strong> use <strong>0, 0.5, or 1</strong>.</li>
+                <li>Each criterion score is multiplied by its <strong>weight</strong> to create a contribution.</li>
+                <li>Contributions are added within the three categories and then combined into a <strong>Final Raw Score</strong>.</li>
+                <li>The raw score is then converted into the <strong>Net Heat Resilience Score (0–100)</strong> shown on the left.</li>
+              </ol>
+              <div class="formula-row">
+                <div class="formula-card"><strong>Contribution</strong><code>Weight × Score</code></div>
+                <div class="formula-card"><strong>Final Raw Score</strong><code>Total Positive Score + Total Negative Score</code></div>
+                <div class="formula-card"><strong>Net Heat Resilience Score</strong><code>(Final Raw Score + 0.5) × 100</code></div>
+              </div>
+            </div>
+          </details>
         </div>
       </div>
     </section>
