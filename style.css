@@ -722,3 +722,58 @@
 .criteria-accordion summary::after {
   margin-left: 0;
 }
+
+/* More useful selected-school explanation */
+.insight-summary-box {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 20px 0 22px;
+}
+
+.insight-summary-box > div {
+  padding: 16px;
+  border: 1px solid rgba(20,35,31,.10);
+  border-radius: 16px;
+  background: rgba(255,253,247,.78);
+}
+
+.insight-summary-box span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.insight-summary-box strong {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--forest);
+  font-size: 18px;
+}
+
+.insight-summary-box p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.category-intro {
+  margin: -4px 0 14px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.category-insight-card .insight-value {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255,253,247,.76);
+  border: 1px solid rgba(20,35,31,.08);
+  font-size: 12.5px;
+}
