@@ -407,9 +407,6 @@ function showSchoolDetails(school) {
       </div>
     </div>
 
-    <div class="technical-note">
-      <strong>Technical note:</strong> Final raw score ${school.rawScore.toFixed(2)} · Derived from combined positive and negative weighted inputs.
-    </div>
   `;
 }
 
