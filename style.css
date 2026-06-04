@@ -87,3 +87,68 @@
 .socio-card strong {
   color: #9a6f1e !important;
 }
+
+
+/* Layout adjustment after removing top KPI cards */
+.risk-scale-section {
+  margin-top: 28px !important;
+}
+
+
+/* More distinguished colors for the three category cards */
+.environment-card {
+  background: linear-gradient(135deg, rgba(39, 174, 96, .18), rgba(255,253,247,.95)) !important;
+  border: 1px solid rgba(39, 174, 96, .24) !important;
+}
+
+.environment-card::before {
+  background: #1f9d55 !important;
+}
+
+.environment-card strong {
+  color: #167a41 !important;
+}
+
+.environment-card span {
+  color: #167a41 !important;
+}
+
+.built-card {
+  background: linear-gradient(135deg, rgba(52, 120, 246, .18), rgba(255,253,247,.95)) !important;
+  border: 1px solid rgba(52, 120, 246, .24) !important;
+}
+
+.built-card::before {
+  background: #2f6fe4 !important;
+}
+
+.built-card strong {
+  color: #2558b8 !important;
+}
+
+.built-card span {
+  color: #2558b8 !important;
+}
+
+.socio-card {
+  background: linear-gradient(135deg, rgba(155, 89, 182, .18), rgba(255,253,247,.95)) !important;
+  border: 1px solid rgba(155, 89, 182, .24) !important;
+}
+
+.socio-card::before {
+  background: #8e44ad !important;
+}
+
+.socio-card strong {
+  color: #743592 !important;
+}
+
+.socio-card span {
+  color: #743592 !important;
+}
+
+/* Slightly stronger number emphasis */
+.category-card strong {
+  font-size: 52px !important;
+  line-height: 1 !important;
+}

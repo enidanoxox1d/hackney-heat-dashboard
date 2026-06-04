@@ -256,9 +256,6 @@ function updateMapDashboard() {
     markerBySchoolName[school.school_name] = marker;
   });
 
-  document.getElementById("school-count").textContent = currentSchools.length;
-  document.getElementById("average-score").textContent = Math.round(currentSchools.reduce((sum, s) => sum + s.resilienceScore, 0) / currentSchools.length);
-  document.getElementById("priority-count").textContent = currentSchools.filter(s => s.resilienceScore <= 50).length;
 
   const body = document.querySelector("#ranking-table tbody");
   body.innerHTML = "";
