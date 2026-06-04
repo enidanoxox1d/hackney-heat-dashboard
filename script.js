@@ -393,10 +393,6 @@ function showSchoolDetails(school) {
 
     <div class="selected-school-block">
       <h4>Category snapshot</h4>
-      <p class="category-intro">
-        Each card translates the score into plain language, so users can understand whether the issue is mainly about the surrounding environment,
-        the school building, or preparedness and support systems.
-      </p>
       <div class="category-insight-grid">
         ${categories.map(category => {
           const value = school.categoryTotals[category];
