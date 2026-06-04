@@ -15,6 +15,7 @@
     <div class="perspective-wrapper">
       <label for="perspectiveSelect" class="perspective-label">Active Perspective:</label>
       <select id="perspectiveSelect" class="perspective-select">
+        <option value="guide">Step 0: 📘 User Guidance</option>
         <option value="input">Step 1: 📝 School Data Input</option>
         <option value="map">Step 2: 🗺️ Map Dashboard</option>
       </select>
@@ -48,7 +49,113 @@
     </div>
   </section>
 
-  <main id="inputPage" class="page-section active-page">
+
+  <main id="guidePage" class="page-section active-page">
+    <section class="guide-layout">
+      <div class="guide-panel guide-hero">
+        <div class="section-kicker">User guidance</div>
+        <h2>How to Use This Dashboard</h2>
+        <p>
+          This dashboard is designed to help schools and decision-makers understand heat resilience in a simple, step-by-step way.
+          Users first read the guidance, then enter school-level data, and finally view the results on the map.
+        </p>
+      </div>
+
+      <div class="guide-grid">
+        <div class="guide-card">
+          <span class="guide-step">Step 1</span>
+          <h3>Choose a school</h3>
+          <p>Go to <strong>School Data Input</strong> and select one of the Hackney schools from the dropdown menu.</p>
+        </div>
+
+        <div class="guide-card">
+          <span class="guide-step">Step 2</span>
+          <h3>Enter the index scores</h3>
+          <p>For each criterion, select the score that best matches the school’s available evidence.</p>
+          <div class="mini-scale">
+            <span><strong>Negative criteria:</strong> 0, -0.5, -1</span>
+            <span><strong>Positive criteria:</strong> 0, 0.5, 1</span>
+          </div>
+        </div>
+
+        <div class="guide-card">
+          <span class="guide-step">Step 3</span>
+          <h3>Save the school score</h3>
+          <p>After entering or changing values, click <strong>Save school score</strong>. The map and ranking table will update automatically.</p>
+        </div>
+
+        <div class="guide-card">
+          <span class="guide-step">Step 4</span>
+          <h3>View the map dashboard</h3>
+          <p>Go to <strong>Map Dashboard</strong> to see which schools appear as higher priority based on their Net Heat Resilience Score.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-layout">
+      <div class="guide-panel">
+        <div class="section-kicker">Score interpretation</div>
+        <h2>What the Score Means</h2>
+        <div class="guide-score-grid">
+          <div class="guide-score-card very-high-guide">
+            <span>0–25</span>
+            <strong>Very High Concern</strong>
+            <p>Urgent support may be needed. The school may have high exposure and limited adaptation capacity.</p>
+          </div>
+          <div class="guide-score-card high-guide">
+            <span>26–50</span>
+            <strong>High Concern</strong>
+            <p>The school should be prioritised for short-term heat response and targeted improvements.</p>
+          </div>
+          <div class="guide-score-card moderate-guide">
+            <span>51–75</span>
+            <strong>Moderate / Improving</strong>
+            <p>Some resilience measures are present, but remaining gaps should be monitored.</p>
+          </div>
+          <div class="guide-score-card strong-guide">
+            <span>76–100</span>
+            <strong>Strong Heat Resilience</strong>
+            <p>The school appears relatively better prepared based on the submitted data.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-layout">
+      <div class="guide-panel">
+        <div class="section-kicker">Category explanation</div>
+        <h2>What the Three Categories Mean</h2>
+        <div class="guide-category-grid">
+          <div class="guide-category-card guide-environment">
+            <h3>Environment</h3>
+            <p>Looks at the surrounding outdoor conditions, such as tree canopy, green space access, and local surface temperature.</p>
+          </div>
+          <div class="guide-category-card guide-built">
+            <h3>Built Environment</h3>
+            <p>Looks at school building features, such as ventilation, cooling, shading, road exposure, and roof treatment.</p>
+          </div>
+          <div class="guide-category-card guide-socio">
+            <h3>Socio-economic / Preparedness</h3>
+            <p>Looks at vulnerability and readiness, such as pupil needs, travel exposure, staff training, hydration support, and communication.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-layout">
+      <div class="guide-panel">
+        <div class="section-kicker">Important note</div>
+        <h2>Prototype Data Notice</h2>
+        <p>
+          The dashboard is currently pre-filled with illustrative demo values so the prototype can show different map colours and ranking outcomes.
+          These values should be replaced with real school-submitted or verified data before being used for formal decision-making.
+        </p>
+      </div>
+    </section>
+  </main>
+
+
+  <main id="inputPage" class="page-section">
     <section class="input-layout">
       <div class="input-panel">
         <div class="section-kicker">School submission form</div>

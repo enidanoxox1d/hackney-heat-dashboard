@@ -384,21 +384,31 @@ function searchSchool() {
   if (marker) marker.openPopup();
 }
 
+function showGuidePage() {
+  document.getElementById("guidePage").classList.add("active-page");
+  document.getElementById("inputPage").classList.remove("active-page");
+  document.getElementById("mapPage").classList.remove("active-page");
+  document.getElementById("perspectiveSelect").value = "guide";
+}
+
 function showInputPage() {
   document.getElementById("inputPage").classList.add("active-page");
+  document.getElementById("guidePage").classList.remove("active-page");
   document.getElementById("mapPage").classList.remove("active-page");
   document.getElementById("perspectiveSelect").value = "input";
 }
 
 function showMapPage() {
   document.getElementById("mapPage").classList.add("active-page");
+  document.getElementById("guidePage").classList.remove("active-page");
   document.getElementById("inputPage").classList.remove("active-page");
   document.getElementById("perspectiveSelect").value = "map";
   setTimeout(() => map.invalidateSize(), 100);
 }
 
 document.getElementById("perspectiveSelect").addEventListener("change", e => {
-  if (e.target.value === "input") showInputPage();
+  if (e.target.value === "guide") showGuidePage();
+  else if (e.target.value === "input") showInputPage();
   else showMapPage();
 });
 document.getElementById("schoolSelect").addEventListener("change", renderCategoryTables);
