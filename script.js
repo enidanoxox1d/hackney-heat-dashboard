@@ -1,567 +1,335 @@
 
-const negativeFactors=[["treeCanopy","Tree canopy cover within 250m of school",.15,"% canopy cover","1 if <10%; 0.5 if 10–20%; 0 if >20%"],["majorRoad","School within 100m of a major road",.15,"Distance to nearest major road, metres","1 if <100m; 0.5 if 100–250m; 0 if >250m"],["waterAccessNegative","Drinking water access",.15,"Distance from classrooms to nearest water point","1 if >30m; 0.5 if 15–30m; 0 if <15m"],["teacherPreparednessNegative","Teacher climate-risk preparedness",.10,"Number of annual staff training sessions","1 if 0 sessions/year; 0.5 if 1 session/year; 0 if ≥2 sessions/year"],["studentAwarenessNegative","Student climate-risk awareness",.10,"Number of climate/heat-risk education sessions per term","1 if 0 per term; 0.5 if 1 per term; 0 if ≥2 per term"],["travelExposure","Heat exposure during travel to/from school",.10,"Distance to nearest public transport stop, metres","1 if >500m; 0.5 if 250–500m; 0 if <250m"],["overheating","Overheating at schools",.25,"GLA overheating risk category or summer land surface temperature","1 if High/Very High or >35°C; 0.5 if Medium or 30–35°C; 0 if Low or <30°C"]].map(x=>({key:x[0],label:x[1],weight:x[2],measured:x[3],rule:x[4]}));
-const positiveActions=[["treePlanting","Physical / Infrastructure Adaptation","Tree planting",.07,"Number of trees planted per 100m² of outdoor space","1 if ≥2 trees per 100m²; 0.5 if 1 tree per 100m²; 0 if none"],["windowOpenable","Physical / Infrastructure Adaptation","Window openable area",.07,"Openable window area as % of classroom floor area","1 if ≥5%; 0.5 if 2–4.9%; 0 if <2%"],["crossVentilation","Physical / Infrastructure Adaptation","Cross-ventilation / night cooling",.05,"Number of opposing openable windows per classroom","1 if ≥2 in most classrooms; 0.5 if some classrooms; 0 if not available"],["waterRefill","Physical / Infrastructure Adaptation","Water refill access",.07,"Water points per floor / per pupil / distance from classrooms","1 if ≥1 refill station per floor or per 100 pupils and all classrooms within 30m; 0.5 if partially met; 0 if not met"],["coolingUnits","Physical / Infrastructure Adaptation","Cooling units / air-conditioning",.10,"Cooling provision in priority classrooms","1 if 1 cooling unit per priority classroom or per 50–70m² in larger rooms; 0.5 if limited cooled refuge rooms only; 0 if none"],["externalShading","Physical / Infrastructure Adaptation","External shading / brise soleil",.07,"% of south/west-facing classroom windows with external shading","1 if ≥75%; 0.5 if 25–74%; 0 if <25%"],["greenRoof","Physical / Infrastructure Adaptation","Green roof / cool roof / roof insulation",.07,"% of exposed roof area retrofitted","1 if ≥50%; 0.5 if 10–49%; 0 if <10%"],["scheduledWaterBreaks","Operational Heat Response","Scheduled water breaks",.08,"Frequency of water breaks during hot days","1 if every 45–60 mins above 26°C and every 30 mins above 30°C; 0.5 if informal; 0 if no policy"],["timetableAdjustment","Operational Heat Response","Timetable adjustment during heat",.09,"Outdoor classes/PE moved away from peak heat","1 if outdoor activities avoided 11am–3pm above 28°C; 0.5 if partial; 0 if none"],["remoteLearning","Operational Heat Response","Remote/flexible learning during extreme heat",.08,"Availability of remote learning during extreme heat days","1 if available above heatwave threshold; 0.5 if only for vulnerable pupils; 0 if not available"],["teacherTraining","Education / Governance Preparedness","Teacher heat-risk training",.08,"Number of annual training sessions for staff","1 if ≥1 annual training for all staff; 0.5 if partial/optional; 0 if none"],["studentEducation","Education / Governance Preparedness","Student climate-risk education",.07,"Number of climate/heat-risk lessons or workshops","1 if ≥1 session per term; 0.5 if once per year; 0 if none"],["studentCommunication","Education / Governance Preparedness","Student heat-risk communication",.05,"Frequency of climate/heat-risk emails/messages","1 if every 2 weeks May–July and weekly above 28°C; 0.5 if occasional; 0 if none"],["contractorAssessment","Education / Governance Preparedness","Contractor heat-risk assessment",.05,"Contractor heat-risk assessment", "1 if twice per year; 0.5 if once per year; 0 if none"]].map(x=>({key:x[0],category:x[1],action:x[2],weight:x[3],measured:x[4],rule:x[5]}));
-const schools=[["Daubeney Primary School","Daubeney Road, Clapton, London, E5 0EG",51.5583,-0.0370],["Lauriston School","Rutland Road, London, E9 7JS",51.53688,-0.046848],["Sebright School","Audrey Street, Goldsmiths Row, London, E2 8QH",51.533367,-0.065455],["Gainsborough Primary School","Berkshire Road, London, E9 5ND",51.5435,-0.0318],["Morningside Primary School","Chatham Place, Hackney, London, E9 6LL",51.5460,-0.0535],["Holy Trinity Church of England Primary School","Beechwood Road, London, E8 3DY",51.5451,-0.0634],["St John the Baptist Voluntary Aided Church of England Primary School","Crondall Street, London, N1 6JG",51.5355,-0.0858],["St Matthias Church of England Primary School","Wordsworth Road, London, N16 8DD",51.5625,-0.0784],["Springfield Community Primary School","Castlewood Road, Hackney, London, N16 6DH",51.5592,-0.0737],["St John and St James CofE Primary School","Isabella Road, Hackney, London, E9 6DX",51.5433,-0.0498],["Kingsmead Primary School","Kingsmead Way, London, E9 5PP",51.5469,-0.0348],["Mandeville Primary School","Oswald Street, Hackney, London, E5 0BT",51.5521,-0.0421],["Gayhurst Community School","Gayhurst Road, Hackney, London, E8 3EN",51.5403,-0.0594],["Shacklewell Primary School","Shacklewell Row, Hackney, London, E8 2EA",51.5522,-0.0736],["Woodberry Down Community Primary School","Woodberry Grove, Finsbury Park, London, N4 1SY",51.5714,-0.0950],["Grazebrook Primary School","Lordship Road, Stoke Newington, London, N16 0QP",51.5629,-0.0875],["Thomas Fairchild Community Primary School","Forston Street, London, N1 7HA",51.5357,-0.0840],["Orchard Primary School","Holcroft Road, Hackney, London, E9 7BB",51.5389,-0.0455],["Southwold Primary School","Detmold Road, Clapton, Hackney, E5 9NL",51.5616,-0.0529],["Hoxton Garden Primary","Ivy Street, Hackney, London, N1 5JD",51.5332,-0.0830]].map(x=>({school_name:x[0],address:x[1],latitude:x[2],longitude:x[3]}));
-const demoDefaults = {
-  "Daubeney Primary School": {
-    "negative": {
-      "treeCanopy": 1,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0.5,
-      "overheating": 1
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 0.5,
-      "coolingUnits": 0,
-      "externalShading": 0.5,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0,
-      "teacherTraining": 0.5,
-      "studentEducation": 0.5,
-      "studentCommunication": 0.5,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Lauriston School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 1,
-      "crossVentilation": 0.5,
-      "waterRefill": 1,
-      "coolingUnits": 0.5,
-      "externalShading": 0.5,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 1,
-      "timetableAdjustment": 1,
-      "remoteLearning": 0.5,
-      "teacherTraining": 1,
-      "studentEducation": 0.5,
-      "studentCommunication": 0.5,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Sebright School": {
-    "negative": {
-      "treeCanopy": 1,
-      "majorRoad": 1,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0,
-      "overheating": 1
-    },
-    "positive": {
-      "treePlanting": 0,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 0.5,
-      "coolingUnits": 0,
-      "externalShading": 0.5,
-      "greenRoof": 0,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0,
-      "teacherTraining": 0.5,
-      "studentEducation": 0.5,
-      "studentCommunication": 0,
-      "contractorAssessment": 0
-    }
-  },
-  "Gainsborough Primary School": {
-    "negative": {
-      "treeCanopy": 1,
-      "majorRoad": 1,
-      "waterAccessNegative": 1,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0.5,
-      "overheating": 1
-    },
-    "positive": {
-      "treePlanting": 0,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0,
-      "waterRefill": 0.5,
-      "coolingUnits": 0,
-      "externalShading": 0,
-      "greenRoof": 0,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0,
-      "teacherTraining": 0.5,
-      "studentEducation": 0,
-      "studentCommunication": 0,
-      "contractorAssessment": 0
-    }
-  },
-  "Morningside Primary School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 1,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0.5,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 1,
-      "coolingUnits": 0.5,
-      "externalShading": 0.5,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 1,
-      "timetableAdjustment": 1,
-      "remoteLearning": 0.5,
-      "teacherTraining": 0.5,
-      "studentEducation": 0.5,
-      "studentCommunication": 0.5,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Holy Trinity Church of England Primary School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 1,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 0.5,
-      "coolingUnits": 0,
-      "externalShading": 0,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0,
-      "teacherTraining": 0.5,
-      "studentEducation": 0.5,
-      "studentCommunication": 0,
-      "contractorAssessment": 0.5
-    }
-  },
-  "St John the Baptist Voluntary Aided Church of England Primary School": {
-    "negative": {
-      "treeCanopy": 1,
-      "majorRoad": 1,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0,
-      "overheating": 1
-    },
-    "positive": {
-      "treePlanting": 0,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0,
-      "waterRefill": 0.5,
-      "coolingUnits": 0,
-      "externalShading": 0,
-      "greenRoof": 0,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0,
-      "teacherTraining": 0.5,
-      "studentEducation": 0,
-      "studentCommunication": 0,
-      "contractorAssessment": 0
-    }
-  },
-  "St Matthias Church of England Primary School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0.5,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 0.5,
-      "coolingUnits": 0.5,
-      "externalShading": 0.5,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0.5,
-      "teacherTraining": 0.5,
-      "studentEducation": 0.5,
-      "studentCommunication": 0.5,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Springfield Community Primary School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 1,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0.5,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 0,
-      "coolingUnits": 0,
-      "externalShading": 0.5,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0,
-      "teacherTraining": 0.5,
-      "studentEducation": 0.5,
-      "studentCommunication": 0,
-      "contractorAssessment": 0.5
-    }
-  },
-  "St John and St James CofE Primary School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 1,
-      "crossVentilation": 0.5,
-      "waterRefill": 0.5,
-      "coolingUnits": 0.5,
-      "externalShading": 0.5,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 1,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0.5,
-      "teacherTraining": 0.5,
-      "studentEducation": 0.5,
-      "studentCommunication": 0.5,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Kingsmead Primary School": {
-    "negative": {
-      "treeCanopy": 1,
-      "majorRoad": 1,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0.5,
-      "overheating": 1
-    },
-    "positive": {
-      "treePlanting": 0,
-      "windowOpenable": 0,
-      "crossVentilation": 0,
-      "waterRefill": 0.5,
-      "coolingUnits": 0,
-      "externalShading": 0,
-      "greenRoof": 0,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0,
-      "teacherTraining": 0.5,
-      "studentEducation": 0,
-      "studentCommunication": 0,
-      "contractorAssessment": 0
-    }
-  },
-  "Mandeville Primary School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 0.5,
-      "coolingUnits": 0.5,
-      "externalShading": 0.5,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 1,
-      "remoteLearning": 0.5,
-      "teacherTraining": 0.5,
-      "studentEducation": 0.5,
-      "studentCommunication": 0.5,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Gayhurst Community School": {
-    "negative": {
-      "treeCanopy": 0,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 0,
-      "teacherPreparednessNegative": 0,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 1,
-      "windowOpenable": 1,
-      "crossVentilation": 0.5,
-      "waterRefill": 1,
-      "coolingUnits": 0.5,
-      "externalShading": 1,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 1,
-      "timetableAdjustment": 1,
-      "remoteLearning": 0.5,
-      "teacherTraining": 1,
-      "studentEducation": 1,
-      "studentCommunication": 0.5,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Shacklewell Primary School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 1,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0.5,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 0.5,
-      "coolingUnits": 0.5,
-      "externalShading": 0.5,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 1,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0.5,
-      "teacherTraining": 0.5,
-      "studentEducation": 0.5,
-      "studentCommunication": 0.5,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Woodberry Down Community Primary School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0.5,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 0.5,
-      "coolingUnits": 0.5,
-      "externalShading": 0.5,
-      "greenRoof": 1,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0.5,
-      "teacherTraining": 0.5,
-      "studentEducation": 0.5,
-      "studentCommunication": 0.5,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Grazebrook Primary School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 0,
-      "waterAccessNegative": 0,
-      "teacherPreparednessNegative": 0,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 1,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 1,
-      "coolingUnits": 0.5,
-      "externalShading": 1,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 1,
-      "timetableAdjustment": 1,
-      "remoteLearning": 0.5,
-      "teacherTraining": 1,
-      "studentEducation": 0.5,
-      "studentCommunication": 0.5,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Thomas Fairchild Community Primary School": {
-    "negative": {
-      "treeCanopy": 1,
-      "majorRoad": 1,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0,
-      "overheating": 1
-    },
-    "positive": {
-      "treePlanting": 0,
-      "windowOpenable": 0,
-      "crossVentilation": 0,
-      "waterRefill": 0.5,
-      "coolingUnits": 0,
-      "externalShading": 0,
-      "greenRoof": 0,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0,
-      "teacherTraining": 0,
-      "studentEducation": 0,
-      "studentCommunication": 0,
-      "contractorAssessment": 0
-    }
-  },
-  "Orchard Primary School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0,
-      "overheating": 0.5
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 0.5,
-      "coolingUnits": 0.5,
-      "externalShading": 0.5,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0.5,
-      "teacherTraining": 1,
-      "studentEducation": 0.5,
-      "studentCommunication": 0.5,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Southwold Primary School": {
-    "negative": {
-      "treeCanopy": 0.5,
-      "majorRoad": 0.5,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0.5,
-      "overheating": 1
-    },
-    "positive": {
-      "treePlanting": 0.5,
-      "windowOpenable": 0.5,
-      "crossVentilation": 0.5,
-      "waterRefill": 0.5,
-      "coolingUnits": 0,
-      "externalShading": 0.5,
-      "greenRoof": 0.5,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0,
-      "teacherTraining": 0.5,
-      "studentEducation": 0.5,
-      "studentCommunication": 0,
-      "contractorAssessment": 0.5
-    }
-  },
-  "Hoxton Garden Primary": {
-    "negative": {
-      "treeCanopy": 1,
-      "majorRoad": 1,
-      "waterAccessNegative": 0.5,
-      "teacherPreparednessNegative": 0.5,
-      "studentAwarenessNegative": 0.5,
-      "travelExposure": 0,
-      "overheating": 1
-    },
-    "positive": {
-      "treePlanting": 0,
-      "windowOpenable": 0,
-      "crossVentilation": 0,
-      "waterRefill": 0.5,
-      "coolingUnits": 0,
-      "externalShading": 0,
-      "greenRoof": 0,
-      "scheduledWaterBreaks": 0.5,
-      "timetableAdjustment": 0.5,
-      "remoteLearning": 0,
-      "teacherTraining": 0.5,
-      "studentEducation": 0,
-      "studentCommunication": 0,
-      "contractorAssessment": 0
-    }
+const criteria = [{"key": "treeCanopy", "category": "Environment", "type": "Negative", "label": "Low tree canopy", "weight": 0.06, "measured": "% tree canopy cover within 250m of school", "rule": "-1 if <10%; -0.5 if 10–20%; 0 if >20%"}, {"key": "greenSpace", "category": "Environment", "type": "Negative", "label": "Limited green space access", "weight": 0.05, "measured": "Distance to nearest park/green space (m)", "rule": "-1 if >500m; -0.5 if 250–500m; 0 if <250m"}, {"key": "surfaceTemp", "category": "Environment", "type": "Negative", "label": "High local surface temperature", "weight": 0.06, "measured": "Summer land surface temperature or GLA overheating risk", "rule": "-1 if >35°C or High/Very High; -0.5 if 30–35°C or Medium; 0 if <30°C or Low"}, {"key": "treePlanting", "category": "Environment", "type": "Positive", "label": "Tree planting", "weight": 0.06, "measured": "Number of trees planted per 100m² of outdoor space", "rule": "1 if ≥2 trees; 0.5 if 1 tree; 0 if none"}, {"key": "outdoorShade", "category": "Environment", "type": "Positive", "label": "Outdoor shade provision", "weight": 0.05, "measured": "% outdoor play/seating area shaded", "rule": "1 if ≥30%; 0.5 if 10–29%; 0 if <10%"}, {"key": "playgroundGreening", "category": "Environment", "type": "Positive", "label": "Playground greening", "weight": 0.06, "measured": "% hard surface converted to planting/soft/permeable surface", "rule": "1 if ≥30%; 0.5 if 10–29%; 0 if <10%"}, {"key": "ventilationPotential", "category": "Built Environment", "type": "Negative", "label": "Poor ventilation potential", "weight": 0.05, "measured": "Openable window area as % of classroom floor area", "rule": "-1 if <2%; -0.5 if 2–4.9%; 0 if ≥5%"}, {"key": "roadProximity", "category": "Built Environment", "type": "Negative", "label": "Poor air quality / major road proximity", "weight": 0.05, "measured": "Distance to nearest major road (m)", "rule": "-1 if <100m; -0.5 if 100–250m; 0 if >250m"}, {"key": "indoorOverheating", "category": "Built Environment", "type": "Negative", "label": "Indoor overheating risk", "weight": 0.07, "measured": "% priority classrooms exceeding 26°C for 2+ hours", "rule": "-1 if >50%; -0.5 if 20–50%; 0 if <20%"}, {"key": "crossVentilation", "category": "Built Environment", "type": "Positive", "label": "Window opening / cross-ventilation", "weight": 0.05, "measured": "Number of opposing openable windows per classroom", "rule": "1 if ≥2 in most classrooms; 0.5 if some classrooms; 0 if unavailable"}, {"key": "coolingRefuge", "category": "Built Environment", "type": "Positive", "label": "Cooling units / cooled refuge rooms", "weight": 0.07, "measured": "Cooling provision in priority classrooms", "rule": "1 if 1 unit per priority classroom or 1 per 50–70m²; 0.5 if limited refuge rooms; 0 if none"}, {"key": "roofShadeRetrofit", "category": "Built Environment", "type": "Positive", "label": "External shading / roof retrofit", "weight": 0.05, "measured": "% windows shaded or % exposed roof retrofitted", "rule": "1 if ≥75% windows shaded or ≥50% roof retrofitted; 0.5 if partial; 0 if not met"}, {"key": "pupilVulnerability", "category": "Socio-economic / Preparedness", "type": "Negative", "label": "Higher pupil vulnerability", "weight": 0.05, "measured": "% pupils who are early-years/primary/SEND/EHCP", "rule": "-1 if high vulnerability; -0.5 if medium; 0 if low"}, {"key": "fsmVulnerability", "category": "Socio-economic / Preparedness", "type": "Negative", "label": "Deprivation / FSM vulnerability", "weight": 0.05, "measured": "% pupils eligible for free school meals", "rule": "-1 if >50%; -0.5 if 30–50%; 0 if <30%"}, {"key": "travelExposure", "category": "Socio-economic / Preparedness", "type": "Negative", "label": "Long heat-exposed travel", "weight": 0.06, "measured": "Distance to nearest public transport stop (m)", "rule": "-1 if >500m; -0.5 if 250–500m; 0 if <250m"}, {"key": "hydrationSupport", "category": "Socio-economic / Preparedness", "type": "Positive", "label": "Water access / hydration support", "weight": 0.06, "measured": "Water points per floor/pupil and distance from classrooms", "rule": "1 if ≥1 refill station per floor or per 100 pupils and classrooms within 30m; 0.5 if partial; 0 if not met"}, {"key": "teacherTraining", "category": "Socio-economic / Preparedness", "type": "Positive", "label": "Teacher heat-risk training", "weight": 0.05, "measured": "Number of annual staff training sessions", "rule": "1 if ≥1 annual training for all staff; 0.5 if partial/optional; 0 if none"}, {"key": "studentEducation", "category": "Socio-economic / Preparedness", "type": "Positive", "label": "Student climate-risk education / communication", "weight": 0.05, "measured": "Lessons, workshops, or messages during summer term", "rule": "1 if ≥1 lesson per term and regular May–July messages; 0.5 if partial; 0 if none"}];
+const schools = [{"school_name": "Daubeney Primary School", "address": "Daubeney Road, Clapton, London, E5 0EG", "latitude": 51.5583, "longitude": -0.037}, {"school_name": "Lauriston School", "address": "Rutland Road, London, E9 7JS", "latitude": 51.53688, "longitude": -0.046848}, {"school_name": "Sebright School", "address": "Audrey Street, Goldsmiths Row, London, E2 8QH", "latitude": 51.533367, "longitude": -0.065455}, {"school_name": "Gainsborough Primary School", "address": "Berkshire Road, London, E9 5ND", "latitude": 51.5435, "longitude": -0.0318}, {"school_name": "Morningside Primary School", "address": "Chatham Place, Hackney, London, E9 6LL", "latitude": 51.546, "longitude": -0.0535}, {"school_name": "Holy Trinity Church of England Primary School", "address": "Beechwood Road, London, E8 3DY", "latitude": 51.5451, "longitude": -0.0634}, {"school_name": "St John the Baptist Voluntary Aided Church of England Primary School", "address": "Crondall Street, London, N1 6JG", "latitude": 51.5355, "longitude": -0.0858}, {"school_name": "St Matthias Church of England Primary School", "address": "Wordsworth Road, London, N16 8DD", "latitude": 51.5625, "longitude": -0.0784}, {"school_name": "Springfield Community Primary School", "address": "Castlewood Road, Hackney, London, N16 6DH", "latitude": 51.5592, "longitude": -0.0737}, {"school_name": "St John and St James CofE Primary School", "address": "Isabella Road, Hackney, London, E9 6DX", "latitude": 51.5433, "longitude": -0.0498}, {"school_name": "Kingsmead Primary School", "address": "Kingsmead Way, London, E9 5PP", "latitude": 51.5469, "longitude": -0.0348}, {"school_name": "Mandeville Primary School", "address": "Oswald Street, Hackney, London, E5 0BT", "latitude": 51.5521, "longitude": -0.0421}, {"school_name": "Gayhurst Community School", "address": "Gayhurst Road, Hackney, London, E8 3EN", "latitude": 51.5403, "longitude": -0.0594}, {"school_name": "Shacklewell Primary School", "address": "Shacklewell Row, Hackney, London, E8 2EA", "latitude": 51.5522, "longitude": -0.0736}, {"school_name": "Woodberry Down Community Primary School", "address": "Woodberry Grove, Finsbury Park, London, N4 1SY", "latitude": 51.5714, "longitude": -0.095}, {"school_name": "Grazebrook Primary School", "address": "Lordship Road, Stoke Newington, London, N16 0QP", "latitude": 51.5629, "longitude": -0.0875}, {"school_name": "Thomas Fairchild Community Primary School", "address": "Forston Street, London, N1 7HA", "latitude": 51.5357, "longitude": -0.084}, {"school_name": "Orchard Primary School", "address": "Holcroft Road, Hackney, London, E9 7BB", "latitude": 51.5389, "longitude": -0.0455}, {"school_name": "Southwold Primary School", "address": "Detmold Road, Clapton, Hackney, E5 9NL", "latitude": 51.5616, "longitude": -0.0529}, {"school_name": "Hoxton Garden Primary", "address": "Ivy Street, Hackney, London, N1 5JD", "latitude": 51.5332, "longitude": -0.083}];
+const demoDefaults = {"Gainsborough Primary School": {"negative": {"treeCanopy": -1, "greenSpace": -1, "surfaceTemp": -1, "ventilationPotential": -1, "roadProximity": -0.5, "indoorOverheating": -1, "pupilVulnerability": -1, "fsmVulnerability": -1, "travelExposure": -0.5}, "positive": {"treePlanting": 0, "outdoorShade": 0, "playgroundGreening": 0, "crossVentilation": 0, "coolingRefuge": 0.5, "roofShadeRetrofit": 0, "hydrationSupport": 0, "teacherTraining": 0, "studentEducation": 0}}, "St John the Baptist Voluntary Aided Church of England Primary School": {"negative": {"treeCanopy": -1, "greenSpace": -1, "surfaceTemp": -1, "ventilationPotential": -1, "roadProximity": -0.5, "indoorOverheating": -1, "pupilVulnerability": -1, "fsmVulnerability": -1, "travelExposure": -0.5}, "positive": {"treePlanting": 0, "outdoorShade": 0, "playgroundGreening": 0, "crossVentilation": 0, "coolingRefuge": 0.5, "roofShadeRetrofit": 0, "hydrationSupport": 0, "teacherTraining": 0, "studentEducation": 0}}, "Kingsmead Primary School": {"negative": {"treeCanopy": -1, "greenSpace": -1, "surfaceTemp": -1, "ventilationPotential": -1, "roadProximity": -0.5, "indoorOverheating": -1, "pupilVulnerability": -1, "fsmVulnerability": -1, "travelExposure": -0.5}, "positive": {"treePlanting": 0, "outdoorShade": 0, "playgroundGreening": 0, "crossVentilation": 0, "coolingRefuge": 0.5, "roofShadeRetrofit": 0, "hydrationSupport": 0, "teacherTraining": 0, "studentEducation": 0}}, "Thomas Fairchild Community Primary School": {"negative": {"treeCanopy": -1, "greenSpace": -1, "surfaceTemp": -1, "ventilationPotential": -1, "roadProximity": -0.5, "indoorOverheating": -1, "pupilVulnerability": -1, "fsmVulnerability": -1, "travelExposure": -0.5}, "positive": {"treePlanting": 0, "outdoorShade": 0, "playgroundGreening": 0, "crossVentilation": 0, "coolingRefuge": 0.5, "roofShadeRetrofit": 0, "hydrationSupport": 0, "teacherTraining": 0, "studentEducation": 0}}, "Hoxton Garden Primary": {"negative": {"treeCanopy": -1, "greenSpace": -1, "surfaceTemp": -1, "ventilationPotential": -1, "roadProximity": -0.5, "indoorOverheating": -1, "pupilVulnerability": -1, "fsmVulnerability": -1, "travelExposure": -0.5}, "positive": {"treePlanting": 0, "outdoorShade": 0, "playgroundGreening": 0, "crossVentilation": 0, "coolingRefuge": 0.5, "roofShadeRetrofit": 0, "hydrationSupport": 0, "teacherTraining": 0, "studentEducation": 0}}, "Daubeney Primary School": {"negative": {"treeCanopy": -1, "greenSpace": -0.5, "surfaceTemp": -1, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -1, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": -0.5}, "positive": {"treePlanting": 0.5, "outdoorShade": 0, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0}}, "Sebright School": {"negative": {"treeCanopy": -1, "greenSpace": -0.5, "surfaceTemp": -1, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -1, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": -0.5}, "positive": {"treePlanting": 0.5, "outdoorShade": 0, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0}}, "Holy Trinity Church of England Primary School": {"negative": {"treeCanopy": -1, "greenSpace": -0.5, "surfaceTemp": -1, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -1, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": -0.5}, "positive": {"treePlanting": 0.5, "outdoorShade": 0, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0}}, "Springfield Community Primary School": {"negative": {"treeCanopy": -1, "greenSpace": -0.5, "surfaceTemp": -1, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -1, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": -0.5}, "positive": {"treePlanting": 0.5, "outdoorShade": 0, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0}}, "Southwold Primary School": {"negative": {"treeCanopy": -1, "greenSpace": -0.5, "surfaceTemp": -1, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -1, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": -0.5}, "positive": {"treePlanting": 0.5, "outdoorShade": 0, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0}}, "Lauriston School": {"negative": {"treeCanopy": -0.5, "greenSpace": -0.5, "surfaceTemp": -0.5, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -0.5, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": 0}, "positive": {"treePlanting": 0.5, "outdoorShade": 0.5, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0.5, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0.5}}, "Morningside Primary School": {"negative": {"treeCanopy": -0.5, "greenSpace": -0.5, "surfaceTemp": -0.5, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -0.5, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": 0}, "positive": {"treePlanting": 0.5, "outdoorShade": 0.5, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0.5, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0.5}}, "St Matthias Church of England Primary School": {"negative": {"treeCanopy": -0.5, "greenSpace": -0.5, "surfaceTemp": -0.5, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -0.5, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": 0}, "positive": {"treePlanting": 0.5, "outdoorShade": 0.5, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0.5, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0.5}}, "St John and St James CofE Primary School": {"negative": {"treeCanopy": -0.5, "greenSpace": -0.5, "surfaceTemp": -0.5, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -0.5, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": 0}, "positive": {"treePlanting": 0.5, "outdoorShade": 0.5, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0.5, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0.5}}, "Mandeville Primary School": {"negative": {"treeCanopy": -0.5, "greenSpace": -0.5, "surfaceTemp": -0.5, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -0.5, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": 0}, "positive": {"treePlanting": 0.5, "outdoorShade": 0.5, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0.5, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0.5}}, "Shacklewell Primary School": {"negative": {"treeCanopy": -0.5, "greenSpace": -0.5, "surfaceTemp": -0.5, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -0.5, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": 0}, "positive": {"treePlanting": 0.5, "outdoorShade": 0.5, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0.5, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0.5}}, "Woodberry Down Community Primary School": {"negative": {"treeCanopy": -0.5, "greenSpace": -0.5, "surfaceTemp": -0.5, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -0.5, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": 0}, "positive": {"treePlanting": 0.5, "outdoorShade": 0.5, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0.5, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0.5}}, "Orchard Primary School": {"negative": {"treeCanopy": -0.5, "greenSpace": -0.5, "surfaceTemp": -0.5, "ventilationPotential": -0.5, "roadProximity": -0.5, "indoorOverheating": -0.5, "pupilVulnerability": -0.5, "fsmVulnerability": -0.5, "travelExposure": 0}, "positive": {"treePlanting": 0.5, "outdoorShade": 0.5, "playgroundGreening": 0.5, "crossVentilation": 0.5, "coolingRefuge": 0.5, "roofShadeRetrofit": 0.5, "hydrationSupport": 0.5, "teacherTraining": 0.5, "studentEducation": 0.5}}, "Gayhurst Community School": {"negative": {"treeCanopy": 0, "greenSpace": -0.5, "surfaceTemp": 0, "ventilationPotential": 0, "roadProximity": 0, "indoorOverheating": 0, "pupilVulnerability": 0, "fsmVulnerability": -0.5, "travelExposure": 0}, "positive": {"treePlanting": 1, "outdoorShade": 0.5, "playgroundGreening": 1, "crossVentilation": 0.5, "coolingRefuge": 1, "roofShadeRetrofit": 0.5, "hydrationSupport": 1, "teacherTraining": 1, "studentEducation": 0.5}}, "Grazebrook Primary School": {"negative": {"treeCanopy": 0, "greenSpace": -0.5, "surfaceTemp": 0, "ventilationPotential": 0, "roadProximity": 0, "indoorOverheating": 0, "pupilVulnerability": 0, "fsmVulnerability": -0.5, "travelExposure": 0}, "positive": {"treePlanting": 1, "outdoorShade": 0.5, "playgroundGreening": 1, "crossVentilation": 0.5, "coolingRefuge": 1, "roofShadeRetrofit": 0.5, "hydrationSupport": 1, "teacherTraining": 1, "studentEducation": 0.5}}};
+const storageKey = "hackneyThreeCategoryScoresV1";
+let savedScores = JSON.parse(localStorage.getItem(storageKey) || "{}");
+let currentSchools = [];
+let markerBySchoolName = {};
+
+const map = L.map("map").setView([51.548, -0.060], 13);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution: "© OpenStreetMap contributors"
+}).addTo(map);
+L.circle([51.548, -0.060], {
+  radius: 4500,
+  color: "#1f5c50",
+  weight: 2,
+  dashArray: "8, 8",
+  fillColor: "#1f5c50",
+  fillOpacity: 0.07
+}).addTo(map);
+const markerLayer = L.layerGroup().addTo(map);
+
+function defaultScoreObject() {
+  const negative = {};
+  const positive = {};
+  criteria.forEach(c => {
+    if (c.type === "Negative") negative[c.key] = 0;
+    else positive[c.key] = 0;
+  });
+  return { negative, positive };
+}
+
+function getSchoolScoreData(name) {
+  return savedScores[name] || demoDefaults[name] || defaultScoreObject();
+}
+
+function calculateSchoolResult(data) {
+  let negativeTotal = 0;
+  let positiveTotal = 0;
+  const categoryTotals = {
+    "Environment": 0,
+    "Built Environment": 0,
+    "Socio-economic / Preparedness": 0
+  };
+
+  criteria.forEach(c => {
+    const score = c.type === "Negative" ? Number(data.negative[c.key] || 0) : Number(data.positive[c.key] || 0);
+    const contribution = c.weight * score;
+    if (c.type === "Negative") negativeTotal += contribution;
+    else positiveTotal += contribution;
+    categoryTotals[c.category] += contribution;
+  });
+
+  const rawScore = negativeTotal + positiveTotal;
+  const resilienceScore = Math.max(0, Math.min(100, Math.round((rawScore + 0.5) * 100)));
+  return {
+    negativeTotal,
+    positiveTotal,
+    rawScore,
+    resilienceScore,
+    interpretation: getInterpretation(resilienceScore),
+    categoryTotals
+  };
+}
+
+function getInterpretation(score) {
+  if (score <= 25) return "Very High Concern";
+  if (score <= 50) return "High Concern";
+  if (score <= 75) return "Moderate / Improving";
+  return "Strong Heat Resilience";
+}
+
+function getColor(interpretation) {
+  if (interpretation === "Very High Concern") return "#b83232";
+  if (interpretation === "High Concern") return "#d86f27";
+  if (interpretation === "Moderate / Improving") return "#c99a3d";
+  return "#2f7d57";
+}
+
+function getBadgeClass(interpretation) {
+  if (interpretation === "Very High Concern") return "very-high";
+  if (interpretation === "High Concern") return "high";
+  if (interpretation === "Moderate / Improving") return "moderate";
+  return "strong";
+}
+
+function getPriorityAction(interpretation) {
+  if (interpretation === "Very High Concern") return "Immediate heat audit, shade/cooling support, hydration review, and urgent adaptation planning.";
+  if (interpretation === "High Concern") return "Prioritise short-term heat response and targeted upgrades in the next planning cycle.";
+  if (interpretation === "Moderate / Improving") return "Monitor remaining gaps and strengthen preparedness before summer.";
+  return "Maintain current resilience measures and review annually.";
+}
+
+function enrichSchools() {
+  return schools.map(school => {
+    const result = calculateSchoolResult(getSchoolScoreData(school.school_name));
+    return { ...school, ...result, priority_action: getPriorityAction(result.interpretation) };
+  });
+}
+
+function renderSchoolDropdown() {
+  const select = document.getElementById("schoolSelect");
+  schools.forEach(school => {
+    const option = document.createElement("option");
+    option.value = school.school_name;
+    option.textContent = school.school_name;
+    select.appendChild(option);
+  });
+}
+
+function createScoreSelect(value, key, type) {
+  const options = type === "Negative" ? [0, -0.5, -1] : [0, 0.5, 1];
+  return `<select class="score-select" data-key="${key}" data-type="${type}">
+    ${options.map(v => `<option value="${v}" ${Number(value) === v ? "selected" : ""}>${v}</option>`).join("")}
+  </select>`;
+}
+
+function renderCategoryTables() {
+  const schoolName = document.getElementById("schoolSelect").value;
+  const data = getSchoolScoreData(schoolName);
+  const container = document.getElementById("categoryTables");
+  container.innerHTML = "";
+
+  const categories = ["Environment", "Built Environment", "Socio-economic / Preparedness"];
+  categories.forEach(category => {
+    const section = document.createElement("section");
+    section.className = "score-table-section";
+    section.innerHTML = `
+      <div class="section-kicker">${category}</div>
+      <h2>${category} Criteria</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Factor / Action</th>
+              <th>Weight</th>
+              <th>Measured value / evidence</th>
+              <th>Scoring rule</th>
+              <th>Score</th>
+              <th>Contribution</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    `;
+    const tbody = section.querySelector("tbody");
+    criteria.filter(c => c.category === category).forEach(c => {
+      const score = c.type === "Negative" ? Number(data.negative[c.key] || 0) : Number(data.positive[c.key] || 0);
+      const contribution = c.weight * score;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td class="${c.type === "Negative" ? "type-negative" : "type-positive"}">${c.type}</td>
+        <td>${c.label}</td>
+        <td>${c.weight.toFixed(2)}</td>
+        <td>${c.measured}</td>
+        <td>${c.rule}</td>
+        <td>${createScoreSelect(score, c.key, c.type)}</td>
+        <td class="contribution-cell">${contribution.toFixed(3)}</td>
+      `;
+      tbody.appendChild(row);
+    });
+    container.appendChild(section);
+  });
+
+  document.querySelectorAll(".score-select").forEach(select => select.addEventListener("change", handleScoreChange));
+  updateInputSummary();
+}
+
+function handleScoreChange(event) {
+  const schoolName = document.getElementById("schoolSelect").value;
+  const type = event.target.dataset.type;
+  const key = event.target.dataset.key;
+  const value = Number(event.target.value);
+  const current = JSON.parse(JSON.stringify(getSchoolScoreData(schoolName)));
+
+  if (type === "Negative") current.negative[key] = value;
+  else current.positive[key] = value;
+
+  savedScores[schoolName] = current;
+  renderCategoryTables();
+}
+
+function updateInputSummary() {
+  const schoolName = document.getElementById("schoolSelect").value;
+  const result = calculateSchoolResult(getSchoolScoreData(schoolName));
+
+  document.getElementById("negativeTotalDisplay").textContent = result.negativeTotal.toFixed(2);
+  document.getElementById("positiveTotalDisplay").textContent = result.positiveTotal.toFixed(2);
+  document.getElementById("rawScoreDisplay").textContent = result.rawScore.toFixed(2);
+  document.getElementById("resilienceScoreDisplay").textContent = result.resilienceScore;
+
+  document.getElementById("environmentContribution").textContent = result.categoryTotals["Environment"].toFixed(2);
+  document.getElementById("builtContribution").textContent = result.categoryTotals["Built Environment"].toFixed(2);
+  document.getElementById("socioContribution").textContent = result.categoryTotals["Socio-economic / Preparedness"].toFixed(2);
+
+  const badge = document.getElementById("riskBadge");
+  badge.className = `badge ${getBadgeClass(result.interpretation)}`;
+  badge.textContent = result.interpretation;
+  document.getElementById("riskExplanation").textContent =
+    `This school currently has a heat resilience score of ${result.resilienceScore}/100.`;
+}
+
+function saveCurrentSchool() {
+  localStorage.setItem(storageKey, JSON.stringify(savedScores));
+  updateMapDashboard();
+  alert("School score saved. The map and ranking have been updated.");
+}
+
+function resetCurrentSchool() {
+  const schoolName = document.getElementById("schoolSelect").value;
+  delete savedScores[schoolName];
+  localStorage.setItem(storageKey, JSON.stringify(savedScores));
+  renderCategoryTables();
+  updateMapDashboard();
+}
+
+function showSchoolDetails(school) {
+  document.getElementById("school-details").innerHTML = `
+    <h3 class="school-name">${school.school_name}</h3>
+    <p><strong>Address:</strong> ${school.address}</p>
+    <span class="badge ${getBadgeClass(school.interpretation)}">${school.interpretation}</span>
+    <div class="score">${school.resilienceScore}/100</div>
+    <p><strong>Total negative score:</strong> ${school.negativeTotal.toFixed(2)}</p>
+    <p><strong>Total positive score:</strong> ${school.positiveTotal.toFixed(2)}</p>
+    <p><strong>Final raw score:</strong> ${school.rawScore.toFixed(2)}</p>
+    <p><strong>Environment:</strong> ${school.categoryTotals["Environment"].toFixed(2)}</p>
+    <p><strong>Built Environment:</strong> ${school.categoryTotals["Built Environment"].toFixed(2)}</p>
+    <p><strong>Socio-economic / Preparedness:</strong> ${school.categoryTotals["Socio-economic / Preparedness"].toFixed(2)}</p>
+    <p><strong>Priority action:</strong> ${school.priority_action}</p>
+  `;
+}
+
+function updateMapDashboard() {
+  currentSchools = enrichSchools();
+  markerBySchoolName = {};
+  markerLayer.clearLayers();
+
+  currentSchools.forEach(school => {
+    const marker = L.circleMarker([school.latitude, school.longitude], {
+      radius: 9,
+      color: "#14231f",
+      weight: 1,
+      fillColor: getColor(school.interpretation),
+      fillOpacity: 0.88
+    }).addTo(markerLayer);
+
+    marker.bindPopup(`
+      <strong>${school.school_name}</strong><br>
+      ${school.address}<br>
+      Heat resilience score: ${school.resilienceScore}/100<br>
+      Interpretation: ${school.interpretation}
+    `);
+
+    marker.on("click", () => showSchoolDetails(school));
+    markerBySchoolName[school.school_name] = marker;
+  });
+
+  document.getElementById("school-count").textContent = currentSchools.length;
+  document.getElementById("average-score").textContent = Math.round(currentSchools.reduce((sum, s) => sum + s.resilienceScore, 0) / currentSchools.length);
+  document.getElementById("priority-count").textContent = currentSchools.filter(s => s.resilienceScore <= 50).length;
+
+  const body = document.querySelector("#ranking-table tbody");
+  body.innerHTML = "";
+  [...currentSchools].sort((a, b) => a.resilienceScore - b.resilienceScore).forEach((school, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${school.school_name}</td>
+      <td>${school.resilienceScore}</td>
+      <td>${school.interpretation}</td>
+      <td>${school.rawScore.toFixed(2)}</td>
+      <td>${school.priority_action}</td>
+    `;
+    row.addEventListener("click", () => {
+      showSchoolDetails(school);
+      showMapPage();
+      map.setView([school.latitude, school.longitude], 15);
+      const marker = markerBySchoolName[school.school_name];
+      if (marker) marker.openPopup();
+    });
+    body.appendChild(row);
+  });
+}
+
+function searchSchool() {
+  const query = document.getElementById("schoolSearch").value.trim().toLowerCase();
+  const message = document.getElementById("searchMessage");
+  if (!query) {
+    message.textContent = "Type a school name to search.";
+    return;
   }
-};
-const storageKey="hackneySchoolScoresV1";let savedScores=JSON.parse(localStorage.getItem(storageKey)||"{}");let currentSchools=[],markerBySchoolName={};
-const map=L.map("map").setView([51.548,-0.060],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map);L.circle([51.548,-0.060],{radius:4500,color:"#1f5c50",weight:2,dashArray:"8, 8",fillColor:"#1f5c50",fillOpacity:.07}).addTo(map);const markerLayer=L.layerGroup().addTo(map);
-function defaultScoreObject(){const negative={},positive={};negativeFactors.forEach(f=>negative[f.key]=.5);positiveActions.forEach(a=>positive[a.key]=.5);return{negative,positive}}
-function getSchoolScoreData(n){return savedScores[n]||demoDefaults[n]||defaultScoreObject()}
-function calculateSchoolResult(d){let negativeTotal=0,positiveTotal=0;negativeFactors.forEach(f=>negativeTotal+=-1*f.weight*Number(d.negative[f.key]||0));positiveActions.forEach(a=>positiveTotal+=a.weight*Number(d.positive[a.key]||0));const rawScore=positiveTotal+negativeTotal;const resilienceScore=Math.max(0,Math.min(100,Math.round(((rawScore+1)/2)*100)));const vulnerabilityScore=100-resilienceScore;return{negativeTotal,positiveTotal,rawScore,resilienceScore,vulnerabilityScore,riskLevel:getRiskLevel(vulnerabilityScore)}}
-function getRiskLevel(s){if(s>=76)return"Very High";if(s>=51)return"High";if(s>=26)return"Moderate";return"Low"}function getColor(r){return r==="Very High"?"#b83232":r==="High"?"#d86f27":r==="Moderate"?"#c99a3d":"#2f7d57"}function getBadgeClass(r){return r.toLowerCase().replace(" ","-")}
-function getPriorityAction(r){if(r==="Very High")return"Immediate heat audit, cooling refuge planning, water access check, and shade intervention.";if(r==="High")return"Prioritise short-term heat response plan and targeted infrastructure improvements.";if(r==="Moderate")return"Strengthen preparedness, communication, and routine heatwave procedures.";return"Maintain current readiness and review annually before summer."}
-function enrichSchools(){return schools.map(s=>{const res=calculateSchoolResult(getSchoolScoreData(s.school_name));return{...s,...res,priority_action:getPriorityAction(res.riskLevel)}})}
-function renderSchoolDropdown(){const select=document.getElementById("schoolSelect");schools.forEach(s=>{const o=document.createElement("option");o.value=s.school_name;o.textContent=s.school_name;select.appendChild(o)})}
-function createScoreSelect(v,k,t){return`<select class="score-select" data-type="${t}" data-key="${k}"><option value="0" ${Number(v)===0?"selected":""}>0</option><option value="0.5" ${Number(v)===.5?"selected":""}>0.5</option><option value="1" ${Number(v)===1?"selected":""}>1</option></select>`}
-function renderInputTables(){const n=document.getElementById("schoolSelect").value,d=getSchoolScoreData(n);let nb=document.querySelector("#negativeScoreTable tbody");nb.innerHTML="";negativeFactors.forEach(f=>{let sc=Number(d.negative[f.key]||0),c=-1*f.weight*sc,row=document.createElement("tr");row.innerHTML=`<td>${f.label}</td><td>${f.weight.toFixed(2)}</td><td>${f.measured}</td><td>${f.rule}</td><td>${createScoreSelect(sc,f.key,"negative")}</td><td class="contribution-cell">${c.toFixed(3)}</td>`;nb.appendChild(row)});let pb=document.querySelector("#positiveScoreTable tbody");pb.innerHTML="";positiveActions.forEach(a=>{let sc=Number(d.positive[a.key]||0),c=a.weight*sc,row=document.createElement("tr");row.innerHTML=`<td>${a.category}</td><td>${a.action}</td><td>${a.weight.toFixed(2)}</td><td>${a.measured}</td><td>${a.rule}</td><td>${createScoreSelect(sc,a.key,"positive")}</td><td class="contribution-cell">${c.toFixed(3)}</td>`;pb.appendChild(row)});document.querySelectorAll(".score-select").forEach(s=>s.addEventListener("change",handleScoreChange));updateInputSummary()}
-function handleScoreChange(e){const n=document.getElementById("schoolSelect").value,t=e.target.dataset.type,k=e.target.dataset.key,v=Number(e.target.value),cur=getSchoolScoreData(n);cur[t][k]=v;savedScores[n]=cur;renderInputTables()}
-function updateInputSummary(){const n=document.getElementById("schoolSelect").value,res=calculateSchoolResult(getSchoolScoreData(n));document.getElementById("negativeTotalDisplay").textContent=res.negativeTotal.toFixed(2);document.getElementById("positiveTotalDisplay").textContent=res.positiveTotal.toFixed(2);document.getElementById("rawScoreDisplay").textContent=res.rawScore.toFixed(2);document.getElementById("vulnerabilityScoreDisplay").textContent=res.vulnerabilityScore;const b=document.getElementById("riskBadge");b.className=`badge ${getBadgeClass(res.riskLevel)}`;b.textContent=res.riskLevel;document.getElementById("riskExplanation").textContent=`This school currently has a vulnerability score of ${res.vulnerabilityScore}/100.`}
-function saveCurrentSchool(){localStorage.setItem(storageKey,JSON.stringify(savedScores));updateMapDashboard();alert("School score saved. The map and ranking have been updated.")}
-function resetCurrentSchool(){const n=document.getElementById("schoolSelect").value;delete savedScores[n];localStorage.setItem(storageKey,JSON.stringify(savedScores));renderInputTables();updateMapDashboard()}
-function showSchoolDetails(s){document.getElementById("school-details").innerHTML=`<h3 class="school-name">${s.school_name}</h3><p><strong>Address:</strong> ${s.address}</p><span class="badge ${getBadgeClass(s.riskLevel)}">${s.riskLevel}</span><div class="score">${s.vulnerabilityScore}/100</div><p><strong>Total negative score:</strong> ${s.negativeTotal.toFixed(2)}</p><p><strong>Total positive score:</strong> ${s.positiveTotal.toFixed(2)}</p><p><strong>Final raw score:</strong> ${s.rawScore.toFixed(2)}</p><p><strong>Priority action:</strong> ${s.priority_action}</p>`}
-function updateMapDashboard(){currentSchools=enrichSchools();markerBySchoolName={};markerLayer.clearLayers();currentSchools.forEach(s=>{const m=L.circleMarker([s.latitude,s.longitude],{radius:9,color:"#14231f",weight:1,fillColor:getColor(s.riskLevel),fillOpacity:.88}).addTo(markerLayer);m.bindPopup(`<strong>${s.school_name}</strong><br>${s.address}<br>Vulnerability score: ${s.vulnerabilityScore}/100<br>Risk level: ${s.riskLevel}`);m.on("click",()=>showSchoolDetails(s));markerBySchoolName[s.school_name]=m});document.getElementById("school-count").textContent=currentSchools.length;document.getElementById("average-score").textContent=Math.round(currentSchools.reduce((sum,s)=>sum+s.vulnerabilityScore,0)/currentSchools.length);document.getElementById("priority-count").textContent=currentSchools.filter(s=>s.vulnerabilityScore>=51).length;const body=document.querySelector("#ranking-table tbody");body.innerHTML="";[...currentSchools].sort((a,b)=>b.vulnerabilityScore-a.vulnerabilityScore).forEach((s,i)=>{const row=document.createElement("tr");row.innerHTML=`<td>${i+1}</td><td>${s.school_name}</td><td>${s.vulnerabilityScore}</td><td>${s.riskLevel}</td><td>${s.rawScore.toFixed(2)}</td><td>${s.priority_action}</td>`;row.addEventListener("click",()=>{showSchoolDetails(s);showMapPage();map.setView([s.latitude,s.longitude],15);markerBySchoolName[s.school_name]?.openPopup()});body.appendChild(row)})}
-function searchSchool(){const q=document.getElementById("schoolSearch").value.trim().toLowerCase(),msg=document.getElementById("searchMessage");if(!q){msg.textContent="Type a school name to search.";return}const m=currentSchools.find(s=>s.school_name.toLowerCase().includes(q));if(!m){msg.textContent="No school matched your search. Try fewer words.";return}msg.textContent=`Showing ${m.school_name}`;showSchoolDetails(m);map.setView([m.latitude,m.longitude],16);markerBySchoolName[m.school_name]?.openPopup()}
-function showInputPage(){document.getElementById("inputPage").classList.add("active-page");document.getElementById("mapPage").classList.remove("active-page");document.getElementById("perspectiveSelect").value="input"}
-function showMapPage(){document.getElementById("mapPage").classList.add("active-page");document.getElementById("inputPage").classList.remove("active-page");document.getElementById("perspectiveSelect").value="map";setTimeout(()=>map.invalidateSize(),100)}
-document.getElementById("perspectiveSelect").addEventListener("change",e=>{if(e.target.value==="input")showInputPage();else showMapPage();});document.getElementById("schoolSelect").addEventListener("change",renderInputTables);document.getElementById("saveSchoolButton").addEventListener("click",saveCurrentSchool);document.getElementById("resetSchoolButton").addEventListener("click",resetCurrentSchool);document.getElementById("searchButton").addEventListener("click",searchSchool);document.getElementById("schoolSearch").addEventListener("keydown",e=>{if(e.key==="Enter")searchSchool()});renderSchoolDropdown();renderInputTables();updateMapDashboard();
+  const match = currentSchools.find(school => school.school_name.toLowerCase().includes(query));
+  if (!match) {
+    message.textContent = "No school matched your search. Try fewer words.";
+    return;
+  }
+  message.textContent = `Showing ${match.school_name}`;
+  showSchoolDetails(match);
+  map.setView([match.latitude, match.longitude], 16);
+  const marker = markerBySchoolName[match.school_name];
+  if (marker) marker.openPopup();
+}
+
+function showInputPage() {
+  document.getElementById("inputPage").classList.add("active-page");
+  document.getElementById("mapPage").classList.remove("active-page");
+  document.getElementById("perspectiveSelect").value = "input";
+}
+
+function showMapPage() {
+  document.getElementById("mapPage").classList.add("active-page");
+  document.getElementById("inputPage").classList.remove("active-page");
+  document.getElementById("perspectiveSelect").value = "map";
+  setTimeout(() => map.invalidateSize(), 100);
+}
+
+document.getElementById("perspectiveSelect").addEventListener("change", e => {
+  if (e.target.value === "input") showInputPage();
+  else showMapPage();
+});
+document.getElementById("schoolSelect").addEventListener("change", renderCategoryTables);
+document.getElementById("saveSchoolButton").addEventListener("click", saveCurrentSchool);
+document.getElementById("resetSchoolButton").addEventListener("click", resetCurrentSchool);
+document.getElementById("searchButton").addEventListener("click", searchSchool);
+document.getElementById("schoolSearch").addEventListener("keydown", e => {
+  if (e.key === "Enter") searchSchool();
+});
+
+renderSchoolDropdown();
+renderCategoryTables();
+updateMapDashboard();

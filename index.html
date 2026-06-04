@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hackney School Heat Vulnerability Dashboard</title>
+  <title>Hackney School Heat Resilience Dashboard</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <div class="header-meta">Climate Future Lab Group 3 · Track 1 London 2030</div>
-    <h1>Hackney School Heat Vulnerability Dashboard</h1>
-    <p>A decision-support prototype for schools to input heat-risk data, calculate a net vulnerability score, and visualise priority schools across Hackney.</p>
+    <h1>Hackney School Heat Resilience Dashboard</h1>
+    <p>A decision-support prototype for schools to input heat-risk data across Environment, Built Environment, and Socio-economic / Preparedness factors, then visualise priority schools across Hackney.</p>
     <div class="perspective-wrapper">
       <label for="perspectiveSelect" class="perspective-label">Active Perspective:</label>
       <select id="perspectiveSelect" class="perspective-select">
@@ -23,34 +23,33 @@
 
   <section class="cards">
     <div class="card"><span class="card-label">Schools shown</span><h2 id="school-count">0</h2></div>
-    <div class="card"><span class="card-label">Average vulnerability</span><h2 id="average-score">0</h2></div>
+    <div class="card"><span class="card-label">Average resilience</span><h2 id="average-score">0</h2></div>
     <div class="card"><span class="card-label">Priority schools</span><h2 id="priority-count">0</h2></div>
   </section>
 
-
   <section class="risk-scale-section">
     <div class="section-kicker">Score interpretation</div>
-    <h2>Risk Level Scale</h2>
+    <h2>Heat Resilience Score Scale</h2>
     <div class="risk-scale-grid">
-      <div class="risk-scale-card low-scale">
+      <div class="risk-scale-card very-high-scale">
         <span>0–25</span>
-        <strong>Low Risk</strong>
-        <p>School appears relatively heat-resilient based on submitted data.</p>
-      </div>
-      <div class="risk-scale-card moderate-scale">
-        <span>26–50</span>
-        <strong>Moderate Risk</strong>
-        <p>Some vulnerability or adaptation gaps are present and should be monitored.</p>
+        <strong>Very High Concern</strong>
+        <p>Urgent support needed. High vulnerability and/or limited adaptation capacity.</p>
       </div>
       <div class="risk-scale-card high-scale">
-        <span>51–75</span>
-        <strong>High Risk</strong>
-        <p>School should be prioritised for short-term heat response improvements.</p>
+        <span>26–50</span>
+        <strong>High Concern</strong>
+        <p>Priority school for short-term heat response and targeted adaptation.</p>
       </div>
-      <div class="risk-scale-card very-high-scale">
+      <div class="risk-scale-card moderate-scale">
+        <span>51–75</span>
+        <strong>Moderate / Improving</strong>
+        <p>Some resilience measures are present, but remaining gaps should be monitored.</p>
+      </div>
+      <div class="risk-scale-card low-scale">
         <span>76–100</span>
-        <strong>Very High Risk</strong>
-        <p>School requires urgent attention and targeted heat adaptation support.</p>
+        <strong>Strong Heat Resilience</strong>
+        <p>Relatively stronger preparedness based on the submitted data.</p>
       </div>
     </div>
   </section>
@@ -59,19 +58,24 @@
     <section class="input-layout">
       <div class="input-panel">
         <div class="section-kicker">School submission form</div>
-        <h2>Input School Heat-Risk Data</h2>
-        <p class="small">Select a school, enter scores for vulnerability burden and adaptation actions, then save the result. Scores: 0 = low / absent, 0.5 = partial / medium, 1 = high / present.</p>
-        <p class="small demo-note"><strong>Prototype note:</strong> The dashboard is pre-filled with illustrative demo scores to show a diverse risk distribution. Replace these values with actual school-submitted data when available.</p>
+        <h2>Input School Heat-Resilience Data</h2>
+        <p class="small">Select a school and score each criterion using the updated 3-category index. Negative criteria use 0, -0.5, or -1. Positive criteria use 0, 0.5, or 1.</p>
+        <p class="small demo-note"><strong>Prototype note:</strong> The dashboard is pre-filled with illustrative demo values to show a diverse map. Replace these values with actual school-submitted data when available.</p>
         <label class="input-label" for="schoolSelect">Select school</label>
         <select id="schoolSelect"></select>
         <div class="score-summary">
-          <div><span>Total Negative Score</span><strong id="negativeTotalDisplay">0.00</strong></div>
-          <div><span>Total Positive Score</span><strong id="positiveTotalDisplay">0.00</strong></div>
-          <div><span>Final Raw Score</span><strong id="rawScoreDisplay">0.00</strong></div>
-          <div><span>Final Vulnerability Score</span><strong id="vulnerabilityScoreDisplay">0</strong></div>
+          <div><span>Negative total</span><strong id="negativeTotalDisplay">0.00</strong></div>
+          <div><span>Positive total</span><strong id="positiveTotalDisplay">0.00</strong></div>
+          <div><span>Final raw score</span><strong id="rawScoreDisplay">0.00</strong></div>
+          <div><span>Heat resilience score</span><strong id="resilienceScoreDisplay">50</strong></div>
+        </div>
+        <div class="category-summary">
+          <div><span>Environment</span><strong id="environmentContribution">0.00</strong></div>
+          <div><span>Built Environment</span><strong id="builtContribution">0.00</strong></div>
+          <div><span>Socio-economic / Preparedness</span><strong id="socioContribution">0.00</strong></div>
         </div>
         <div class="risk-result">
-          <span id="riskBadge" class="badge moderate">Moderate</span>
+          <span id="riskBadge" class="badge high">High Concern</span>
           <p id="riskExplanation">Complete the scoring fields below and save the school profile.</p>
         </div>
         <div class="form-actions">
@@ -83,41 +87,22 @@
       <div class="method-panel">
         <div class="section-kicker">Method</div>
         <h2>How the Score Works</h2>
-        <p>Negative factors create a vulnerability burden. Positive adaptation actions reduce that burden.</p>
+        <p>The updated index is balanced across three categories: Environment, Built Environment, and Socio-economic / Preparedness.</p>
+        <div class="formula-card"><strong>Contribution</strong><code>Weight × Score</code></div>
         <div class="formula-card"><strong>Final Raw Score</strong><code>Total Positive Score + Total Negative Score</code></div>
-        <div class="formula-card"><strong>Final Vulnerability Score</strong><code>100 - (((Final Raw Score + 1) / 2) × 100)</code></div>
-        <p class="small">A higher vulnerability score means the school is more exposed or less prepared. This keeps the map intuitive: higher score = higher risk.</p>
+        <div class="formula-card"><strong>Net Heat Resilience Score</strong><code>(Final Raw Score + 0.5) × 100</code></div>
+        <p class="small">Higher values mean stronger heat resilience. Lower values indicate higher concern and higher priority for intervention.</p>
       </div>
     </section>
 
-    <section class="score-table-section">
-      <div class="section-kicker">Section 1</div>
-      <h2>Negative Score Section: Vulnerability Burden</h2>
-      <div class="table-scroll">
-        <table id="negativeScoreTable">
-          <thead><tr><th>Vulnerability factor</th><th>Weight</th><th>Measured value</th><th>Scoring rule</th><th>Score</th><th>Contribution</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="score-table-section">
-      <div class="section-kicker">Section 2</div>
-      <h2>Positive Score Section: Adaptation Actions</h2>
-      <div class="table-scroll">
-        <table id="positiveScoreTable">
-          <thead><tr><th>Category</th><th>Action</th><th>Weight</th><th>Measured value</th><th>Scoring rule</th><th>Score</th><th>Contribution</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+    <section id="categoryTables"></section>
   </main>
 
   <main id="mapPage" class="page-section">
     <section class="map-dashboard">
       <section class="map-section">
         <div class="section-kicker">Spatial diagnosis</div>
-        <h2>School Vulnerability Map</h2>
+        <h2>School Heat Resilience Map</h2>
         <div class="search-box">
           <input type="text" id="schoolSearch" placeholder="Search school name, e.g. Orchard" autocomplete="off">
           <button id="searchButton">Search</button>
@@ -125,29 +110,32 @@
         <div id="searchMessage" class="search-message"></div>
         <div id="map"></div>
         <div class="legend">
-          <strong>Risk level</strong>
-          <span><i class="low"></i> Low</span>
-          <span><i class="moderate"></i> Moderate</span>
-          <span><i class="high"></i> High</span>
-          <span><i class="very-high"></i> Very High</span>
+          <strong>Score band</strong>
+          <span><i class="very-high"></i> Very High Concern</span>
+          <span><i class="high"></i> High Concern</span>
+          <span><i class="moderate"></i> Moderate / Improving</span>
+          <span><i class="low"></i> Strong Resilience</span>
         </div>
       </section>
       <section class="side-panel">
         <div class="section-kicker">School profile</div>
         <h2>Selected School</h2>
-        <div id="school-details"><p>Click a school marker or table row to view its heat vulnerability profile.</p></div>
+        <div id="school-details"><p>Click a school marker or table row to view its heat resilience profile.</p></div>
       </section>
     </section>
 
     <section class="ranking">
       <div class="section-kicker">Prioritisation output</div>
-      <h2>School Vulnerability Ranking</h2>
-      <p class="small">The ranking updates after schools save their input data.</p>
-      <table id="ranking-table"><thead><tr><th>Rank</th><th>School</th><th>Vulnerability score</th><th>Risk level</th><th>Final raw score</th><th>Priority action</th></tr></thead><tbody></tbody></table>
+      <h2>School Priority Ranking</h2>
+      <p class="small">Lower heat resilience scores appear first because they indicate higher concern.</p>
+      <table id="ranking-table">
+        <thead><tr><th>Rank</th><th>School</th><th>Heat resilience score</th><th>Interpretation</th><th>Final raw score</th><th>Priority action</th></tr></thead>
+        <tbody></tbody>
+      </table>
     </section>
   </main>
 
-  <footer>Climate Future Lab Group 3 · Hackney School Heat Vulnerability Dashboard</footer>
+  <footer>Climate Future Lab Group 3 · Hackney School Heat Resilience Dashboard</footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
