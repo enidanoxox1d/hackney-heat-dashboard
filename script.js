@@ -184,18 +184,40 @@ function handleScoreChange(event) {
   renderCategoryTables();
 }
 
+
+function updateCategoryCard(cardId, statusId, value) {
+  const card = document.getElementById(cardId);
+  const status = document.getElementById(statusId);
+
+  card.classList.remove("positive", "negative", "neutral");
+
+  if (value > 0.01) {
+    card.classList.add("positive");
+    status.textContent = "Positive resilience contribution";
+  } else if (value < -0.01) {
+    card.classList.add("negative");
+    status.textContent = "Vulnerability burden";
+  } else {
+    card.classList.add("neutral");
+    status.textContent = "Balanced / neutral";
+  }
+}
+
 function updateInputSummary() {
   const schoolName = document.getElementById("schoolSelect").value;
   const result = calculateSchoolResult(getSchoolScoreData(schoolName));
 
-  document.getElementById("negativeTotalDisplay").textContent = result.negativeTotal.toFixed(2);
-  document.getElementById("positiveTotalDisplay").textContent = result.positiveTotal.toFixed(2);
-  document.getElementById("rawScoreDisplay").textContent = result.rawScore.toFixed(2);
-  document.getElementById("resilienceScoreDisplay").textContent = result.resilienceScore;
+  const environmentValue = result.categoryTotals["Environment"];
+  const builtValue = result.categoryTotals["Built Environment"];
+  const socioValue = result.categoryTotals["Socio-economic / Preparedness"];
 
-  document.getElementById("environmentContribution").textContent = result.categoryTotals["Environment"].toFixed(2);
-  document.getElementById("builtContribution").textContent = result.categoryTotals["Built Environment"].toFixed(2);
-  document.getElementById("socioContribution").textContent = result.categoryTotals["Socio-economic / Preparedness"].toFixed(2);
+  document.getElementById("environmentContribution").textContent = environmentValue.toFixed(2);
+  document.getElementById("builtContribution").textContent = builtValue.toFixed(2);
+  document.getElementById("socioContribution").textContent = socioValue.toFixed(2);
+
+  updateCategoryCard("environmentCard", "environmentStatus", environmentValue);
+  updateCategoryCard("builtCard", "builtStatus", builtValue);
+  updateCategoryCard("socioCard", "socioStatus", socioValue);
 
   const badge = document.getElementById("riskBadge");
   badge.className = `badge ${getBadgeClass(result.interpretation)}`;
