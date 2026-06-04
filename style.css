@@ -620,3 +620,86 @@
 #guidePage {
   margin-top: 28px;
 }
+
+
+/* Compact score scale shown only in Step 2 Map Dashboard */
+.map-score-scale {
+  margin: 0 48px 28px;
+  padding: 22px;
+  background: linear-gradient(180deg, rgba(255,253,247,.96), rgba(249,246,238,.92));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+}
+
+.map-score-scale h2 {
+  margin-bottom: 14px;
+}
+
+.compact-score-scale {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.compact-band {
+  position: relative;
+  padding: 14px 14px 14px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(20,35,31,.10);
+  background: rgba(255,253,247,.86);
+  overflow: hidden;
+}
+
+.compact-band::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 5px;
+  border-radius: 0 99px 99px 0;
+}
+
+.compact-band strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .06em;
+}
+
+.compact-band span {
+  display: block;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.compact-band.very-high-band::before { background: #b83232; }
+.compact-band.high-band::before { background: #d86f27; }
+.compact-band.moderate-band::before { background: #c99a3d; }
+.compact-band.strong-band::before { background: #2f6f54; }
+
+.compact-band.very-high-band span { color: #b83232; }
+.compact-band.high-band span { color: #d86f27; }
+.compact-band.moderate-band span { color: #9a6f1e; }
+.compact-band.strong-band span { color: #2f6f54; }
+
+@media (max-width: 1150px) {
+  .compact-score-scale {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 850px) {
+  .map-score-scale {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .compact-score-scale {
+    grid-template-columns: 1fr;
+  }
+}
