@@ -613,3 +613,10 @@
     min-height: 0;
   }
 }
+
+/* Layout adjustment after removing the top score scale section */
+#inputPage,
+#mapPage,
+#guidePage {
+  margin-top: 28px;
+}
