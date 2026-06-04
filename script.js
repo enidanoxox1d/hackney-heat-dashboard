@@ -124,31 +124,44 @@ function renderCategoryTables() {
   container.innerHTML = "";
 
   const categories = ["Environment", "Built Environment", "Socio-economic / Preparedness"];
-  categories.forEach(category => {
+  categories.forEach((category, index) => {
+    const categoryCriteria = criteria.filter(c => c.category === category);
     const section = document.createElement("section");
-    section.className = "score-table-section";
+    section.className = "score-table-section criteria-accordion-section";
     section.innerHTML = `
-      <div class="section-kicker">${category}</div>
-      <h2>${category} Criteria</h2>
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Factor / Action</th>
-              <th>Weight</th>
-              <th>Measured value / evidence</th>
-              <th>Scoring rule</th>
-              <th>Score</th>
-              <th>Contribution</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+      <details class="criteria-accordion" ${index === 0 ? "open" : ""}>
+        <summary>
+          <div class="criteria-summary-text">
+            <div class="section-kicker">${category}</div>
+            <h2>${category} Criteria</h2>
+            <p>Click to expand and enter scores for this category.</p>
+          </div>
+          <div class="criteria-summary-meta">
+            <span>${categoryCriteria.length} items</span>
+          </div>
+        </summary>
+        <div class="criteria-accordion-content">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Factor / Action</th>
+                  <th>Weight</th>
+                  <th>Measured value / evidence</th>
+                  <th>Scoring rule</th>
+                  <th>Score</th>
+                  <th>Contribution</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
     `;
     const tbody = section.querySelector("tbody");
-    criteria.filter(c => c.category === category).forEach(c => {
+    categoryCriteria.forEach(c => {
       const score = c.type === "Negative" ? Number(data.negative[c.key] || 0) : Number(data.positive[c.key] || 0);
       const contribution = c.weight * score;
       const row = document.createElement("tr");
