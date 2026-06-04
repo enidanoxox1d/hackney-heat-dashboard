@@ -215,19 +215,101 @@ function resetCurrentSchool() {
   updateMapDashboard();
 }
 
+
+function getScoreNarrative(score) {
+  if (score <= 25) {
+    return "This school is currently in the highest-priority band. In simple terms, it may be more exposed to heat risk and may have fewer protective measures in place.";
+  }
+  if (score <= 50) {
+    return "This school is in the high-concern band. It may need targeted support before or during hot periods, especially in the areas with the weakest category scores.";
+  }
+  if (score <= 75) {
+    return "This school is in the moderate / improving band. Some resilience measures appear to be in place, but there are still gaps worth monitoring and improving.";
+  }
+  return "This school is in the stronger-resilience band. Based on the submitted data, it appears to be relatively better prepared for heat risk than other schools in the dashboard.";
+}
+
+function getCategoryStatus(value) {
+  if (value <= -0.05) {
+    return {
+      label: "Needs attention",
+      description: "This category is currently lowering the school's overall heat-resilience profile."
+    };
+  }
+  if (value < 0.03) {
+    return {
+      label: "Mixed picture",
+      description: "This category shows some strengths, but there are still important gaps to improve."
+    };
+  }
+  return {
+    label: "Relatively stronger",
+    description: "This category is currently supporting the school's heat resilience."
+  };
+}
+
+function getCategoryCardClass(category) {
+  if (category === "Environment") return "environment-card";
+  if (category === "Built Environment") return "built-card";
+  return "socio-card";
+}
+
+function formatSignedValue(value) {
+  return value > 0 ? `+${value.toFixed(2)}` : value.toFixed(2);
+}
+
 function showSchoolDetails(school) {
+  const environmentStatus = getCategoryStatus(school.categoryTotals["Environment"]);
+  const builtStatus = getCategoryStatus(school.categoryTotals["Built Environment"]);
+  const socioStatus = getCategoryStatus(school.categoryTotals["Socio-economic / Preparedness"]);
+
   document.getElementById("school-details").innerHTML = `
     <h3 class="school-name">${school.school_name}</h3>
     <p><strong>Address:</strong> ${school.address}</p>
-    <span class="badge ${getBadgeClass(school.interpretation)}">${school.interpretation}</span>
-    <div class="score">${school.resilienceScore}/100</div>
-    <p><strong>Total negative score:</strong> ${school.negativeTotal.toFixed(2)}</p>
-    <p><strong>Total positive score:</strong> ${school.positiveTotal.toFixed(2)}</p>
-    <p><strong>Final raw score:</strong> ${school.rawScore.toFixed(2)}</p>
-    <p><strong>Environment:</strong> ${school.categoryTotals["Environment"].toFixed(2)}</p>
-    <p><strong>Built Environment:</strong> ${school.categoryTotals["Built Environment"].toFixed(2)}</p>
-    <p><strong>Socio-economic / Preparedness:</strong> ${school.categoryTotals["Socio-economic / Preparedness"].toFixed(2)}</p>
-    <p><strong>Priority action:</strong> ${school.priority_action}</p>
+
+    <div class="selected-school-hero">
+      <span class="badge ${getBadgeClass(school.interpretation)}">${school.interpretation}</span>
+      <div class="selected-school-score">${school.resilienceScore}<span>/100</span></div>
+      <p class="selected-school-summary">${getScoreNarrative(school.resilienceScore)}</p>
+    </div>
+
+    <div class="selected-school-block">
+      <h4>What this means</h4>
+      <p>This score gives a simple overall view of how well the school may be prepared for heat risk. Lower scores indicate higher concern and greater need for support.</p>
+    </div>
+
+    <div class="selected-school-block">
+      <h4>Category snapshot</h4>
+      <div class="category-insight-grid">
+        <div class="category-insight-card ${getCategoryCardClass("Environment")}">
+          <span class="insight-kicker">Environment</span>
+          <strong>${environmentStatus.label}</strong>
+          <p>${environmentStatus.description}</p>
+          <div class="insight-value">Category contribution: ${formatSignedValue(school.categoryTotals["Environment"])}</div>
+        </div>
+        <div class="category-insight-card ${getCategoryCardClass("Built Environment")}">
+          <span class="insight-kicker">Built Environment</span>
+          <strong>${builtStatus.label}</strong>
+          <p>${builtStatus.description}</p>
+          <div class="insight-value">Category contribution: ${formatSignedValue(school.categoryTotals["Built Environment"])}</div>
+        </div>
+        <div class="category-insight-card ${getCategoryCardClass("Socio-economic / Preparedness")}">
+          <span class="insight-kicker">Socio-economic / Preparedness</span>
+          <strong>${socioStatus.label}</strong>
+          <p>${socioStatus.description}</p>
+          <div class="insight-value">Category contribution: ${formatSignedValue(school.categoryTotals["Socio-economic / Preparedness"])}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="selected-school-block">
+      <h4>Recommended focus</h4>
+      <p>${school.priority_action}</p>
+    </div>
+
+    <div class="technical-note">
+      <strong>Technical note:</strong> Final raw score ${school.rawScore.toFixed(2)} · Derived from combined positive and negative weighted inputs.
+    </div>
   `;
 }
 

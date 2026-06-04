@@ -152,3 +152,111 @@
   font-size: 52px !important;
   line-height: 1 !important;
 }
+
+
+/* Friendlier Selected School panel */
+.selected-school-hero {
+  margin: 18px 0 24px;
+}
+
+.selected-school-score {
+  margin: 14px 0 10px;
+  font-size: 72px;
+  line-height: 0.95;
+  font-weight: 800;
+  color: var(--forest);
+  letter-spacing: -0.04em;
+}
+
+.selected-school-score span {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.selected-school-summary {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+.selected-school-block {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.selected-school-block h4 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.category-insight-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.category-insight-card {
+  position: relative;
+  overflow: hidden;
+  padding: 18px 18px 18px 22px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: rgba(255,253,247,.92);
+}
+
+.category-insight-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 6px;
+  border-radius: 0 99px 99px 0;
+}
+
+.insight-kicker {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.category-insight-card strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 22px !important;
+}
+
+.category-insight-card p {
+  margin: 0 0 12px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.insight-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.technical-note {
+  margin-top: 22px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(17,34,29,.04);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (min-width: 900px) {
+  .category-insight-grid {
+    grid-template-columns: 1fr;
+  }
+}
