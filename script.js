@@ -315,11 +315,6 @@ function showSchoolDetails(school) {
       </div>
     </div>
 
-    <div class="selected-school-block">
-      <h4>Recommended focus</h4>
-      <p>${school.priority_action}</p>
-    </div>
-
     <div class="technical-note">
       <strong>Technical note:</strong> Final raw score ${school.rawScore.toFixed(2)} · Derived from combined positive and negative weighted inputs.
     </div>
@@ -352,9 +347,14 @@ function updateMapDashboard() {
   });
 
 
-  const body = document.querySelector("#ranking-table tbody");
-  body.innerHTML = "";
-  [...currentSchools].sort((a, b) => a.resilienceScore - b.resilienceScore).forEach((school, index) => {
+  const top3Body = document.querySelector("#ranking-table-top3 tbody");
+  const restBody = document.querySelector("#ranking-table-rest tbody");
+  top3Body.innerHTML = "";
+  restBody.innerHTML = "";
+
+  const sortedSchools = [...currentSchools].sort((a, b) => a.resilienceScore - b.resilienceScore);
+
+  sortedSchools.forEach((school, index) => {
     const row = document.createElement("tr");
     if (index === 0) row.classList.add("top-rank-1");
     else if (index === 1) row.classList.add("top-rank-2");
@@ -367,6 +367,7 @@ function updateMapDashboard() {
       <td>${school.interpretation}</td>
       <td>${school.priority_action}</td>
     `;
+
     row.addEventListener("click", () => {
       showSchoolDetails(school);
       showMapPage();
@@ -374,7 +375,9 @@ function updateMapDashboard() {
       const marker = markerBySchoolName[school.school_name];
       if (marker) marker.openPopup();
     });
-    body.appendChild(row);
+
+    if (index < 3) top3Body.appendChild(row);
+    else restBody.appendChild(row);
   });
 }
 

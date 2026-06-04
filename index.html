@@ -174,10 +174,29 @@
       <div class="section-kicker">Prioritisation output</div>
       <h2>School Priority Ranking</h2>
       <p class="small">Lower heat resilience scores appear first because they indicate higher concern.</p>
-      <table id="ranking-table">
-        <thead><tr><th>Rank</th><th>School</th><th>Heat resilience score</th><th>Interpretation</th><th>Priority action</th></tr></thead>
-        <tbody></tbody>
-      </table>
+
+      <div class="ranking-highlight-block">
+        <h3 class="ranking-subtitle">Top 3 highest-priority schools</h3>
+        <table id="ranking-table-top3">
+          <thead><tr><th>Rank</th><th>School</th><th>Heat resilience score</th><th>Interpretation</th><th>Priority action</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <details class="accordion-item ranking-accordion">
+        <summary>
+          <div>
+            <strong>Remaining schools (Rank 4 onwards)</strong>
+            <span>Click to expand or collapse</span>
+          </div>
+        </summary>
+        <div class="accordion-content">
+          <table id="ranking-table-rest">
+            <thead><tr><th>Rank</th><th>School</th><th>Heat resilience score</th><th>Interpretation</th><th>Priority action</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </details>
     </section>
   </main>
 
