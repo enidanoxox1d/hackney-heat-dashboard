@@ -343,12 +343,15 @@ function updateMapDashboard() {
   body.innerHTML = "";
   [...currentSchools].sort((a, b) => a.resilienceScore - b.resilienceScore).forEach((school, index) => {
     const row = document.createElement("tr");
+    if (index === 0) row.classList.add("top-rank-1");
+    else if (index === 1) row.classList.add("top-rank-2");
+    else if (index === 2) row.classList.add("top-rank-3");
+
     row.innerHTML = `
-      <td>${index + 1}</td>
+      <td><span class="rank-pill rank-${index + 1 <= 3 ? index + 1 : "default"}">${index + 1}</span></td>
       <td>${school.school_name}</td>
       <td>${school.resilienceScore}</td>
       <td>${school.interpretation}</td>
-      <td>${school.rawScore.toFixed(2)}</td>
       <td>${school.priority_action}</td>
     `;
     row.addEventListener("click", () => {
