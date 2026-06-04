@@ -329,3 +329,59 @@
 
 
 .method-explain-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:16px}.method-card{padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(255,253,247,.75);box-shadow:var(--shadow-soft)}.method-card h3{margin:0 0 12px;font-size:18px;color:var(--forest)}.method-card.wide{margin-top:14px}.method-list,.method-steps{margin:0;padding-left:20px;color:var(--ink-soft);line-height:1.6}.method-list li,.method-steps li{margin:0 0 8px}.formula-row{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}.formula-row .formula-card{margin:0}.method-panel .small{margin-top:10px}.method-panel strong{color:var(--ink)}@media (min-width: 1100px){.method-explain-grid{grid-template-columns:1fr 1fr}}
+
+
+/* Refined category palette to better match the overall report vibe */
+.environment-card,
+.category-insight-card.environment-card {
+  background: linear-gradient(135deg, rgba(53, 128, 94, .12), rgba(255,253,247,.94)) !important;
+  border: 1px solid rgba(53, 128, 94, .18) !important;
+}
+.environment-card::before,
+.category-insight-card.environment-card::before {
+  background: #4e8f70 !important;
+}
+.environment-card strong,
+.environment-card span,
+.category-insight-card.environment-card strong,
+.category-insight-card.environment-card .insight-kicker {
+  color: #2f6f54 !important;
+}
+
+.built-card,
+.category-insight-card.built-card {
+  background: linear-gradient(135deg, rgba(96, 123, 174, .13), rgba(255,253,247,.94)) !important;
+  border: 1px solid rgba(96, 123, 174, .18) !important;
+}
+.built-card::before,
+.category-insight-card.built-card::before {
+  background: #6a86b8 !important;
+}
+.built-card strong,
+.built-card span,
+.category-insight-card.built-card strong,
+.category-insight-card.built-card .insight-kicker {
+  color: #4f6796 !important;
+}
+
+.socio-card,
+.category-insight-card.socio-card {
+  background: linear-gradient(135deg, rgba(132, 105, 164, .13), rgba(255,253,247,.94)) !important;
+  border: 1px solid rgba(132, 105, 164, .18) !important;
+}
+.socio-card::before,
+.category-insight-card.socio-card::before {
+  background: #8a73ad !important;
+}
+.socio-card strong,
+.socio-card span,
+.category-insight-card.socio-card strong,
+.category-insight-card.socio-card .insight-kicker {
+  color: #6d5890 !important;
+}
+
+/* Slightly softer number styling so it fits the report tone better */
+.category-card strong {
+  font-size: 50px !important;
+  letter-spacing: -0.03em;
+}
