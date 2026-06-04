@@ -63,22 +63,13 @@
         <p class="small demo-note"><strong>Prototype note:</strong> The dashboard is pre-filled with illustrative demo values to show a diverse map. Replace these values with actual school-submitted data when available.</p>
         <label class="input-label" for="schoolSelect">Select school</label>
         <select id="schoolSelect"></select>
+        <div class="score-summary single-score-summary">
+          <div class="main-score-card"><span>Net Heat Resilience Score</span><strong id="resilienceScoreDisplay">50</strong></div>
+        </div>
         <div class="category-summary">
-          <div class="category-score-card" id="environmentCard">
-            <span>Environment</span>
-            <strong id="environmentContribution">0.00</strong>
-            <p id="environmentStatus">Neutral</p>
-          </div>
-          <div class="category-score-card" id="builtCard">
-            <span>Built Environment</span>
-            <strong id="builtContribution">0.00</strong>
-            <p id="builtStatus">Neutral</p>
-          </div>
-          <div class="category-score-card" id="socioCard">
-            <span>Socio-economic / Preparedness</span>
-            <strong id="socioContribution">0.00</strong>
-            <p id="socioStatus">Neutral</p>
-          </div>
+          <div class="category-card environment-card"><span>Environment</span><strong id="environmentContribution">0.00</strong></div>
+          <div class="category-card built-card"><span>Built Environment</span><strong id="builtContribution">0.00</strong></div>
+          <div class="category-card socio-card"><span>Socio-economic / Preparedness</span><strong id="socioContribution">0.00</strong></div>
         </div>
         <div class="risk-result">
           <span id="riskBadge" class="badge high">High Concern</span>
