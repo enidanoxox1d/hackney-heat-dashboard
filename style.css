@@ -134,3 +134,11 @@
     grid-template-columns: 1fr;
   }
 }
+
+.demo-note {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(201,154,61,.10);
+  border: 1px solid rgba(201,154,61,.18);
+}
