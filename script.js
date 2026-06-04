@@ -129,7 +129,7 @@ function renderCategoryTables() {
     const section = document.createElement("section");
     section.className = "score-table-section criteria-accordion-section";
     section.innerHTML = `
-      <details class="criteria-accordion" ${index === 0 ? "open" : ""}>
+      <details class="criteria-accordion">
         <summary>
           <div class="criteria-summary-text">
             <div class="section-kicker">${category}</div>
