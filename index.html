@@ -48,113 +48,7 @@
     </div>
   </section>
 
-
-  <main id="guidePage" class="page-section active-page">
-    <section class="guide-layout">
-      <div class="guide-panel guide-hero">
-        <div class="section-kicker">User guidance</div>
-        <h2>How to Use This Dashboard</h2>
-        <p>
-          This dashboard is designed to help schools and decision-makers understand heat resilience in a simple, step-by-step way.
-          Users first read the guidance, then enter school-level data, and finally view the results on the map.
-        </p>
-      </div>
-
-      <div class="guide-grid">
-        <div class="guide-card">
-          <span class="guide-step">Step 1</span>
-          <h3>Choose a school</h3>
-          <p>Go to <strong>School Data Input</strong> and select one of the Hackney schools from the dropdown menu.</p>
-        </div>
-
-        <div class="guide-card">
-          <span class="guide-step">Step 2</span>
-          <h3>Enter the index scores</h3>
-          <p>For each criterion, select the score that best matches the school’s available evidence.</p>
-          <div class="mini-scale">
-            <span><strong>Negative criteria:</strong> 0, -0.5, -1</span>
-            <span><strong>Positive criteria:</strong> 0, 0.5, 1</span>
-          </div>
-        </div>
-
-        <div class="guide-card">
-          <span class="guide-step">Step 3</span>
-          <h3>Save the school score</h3>
-          <p>After entering or changing values, click <strong>Save school score</strong>. The map and ranking table will update automatically.</p>
-        </div>
-
-        <div class="guide-card">
-          <span class="guide-step">Step 4</span>
-          <h3>View the map dashboard</h3>
-          <p>Go to <strong>Map Dashboard</strong> to see which schools appear as higher priority based on their Net Heat Resilience Score.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="guide-layout">
-      <div class="guide-panel">
-        <div class="section-kicker">Score interpretation</div>
-        <h2>What the Score Means</h2>
-        <div class="guide-score-grid">
-          <div class="guide-score-card very-high-guide">
-            <span>0–25</span>
-            <strong>Very High Concern</strong>
-            <p>Urgent support may be needed. The school may have high exposure and limited adaptation capacity.</p>
-          </div>
-          <div class="guide-score-card high-guide">
-            <span>26–50</span>
-            <strong>High Concern</strong>
-            <p>The school should be prioritised for short-term heat response and targeted improvements.</p>
-          </div>
-          <div class="guide-score-card moderate-guide">
-            <span>51–75</span>
-            <strong>Moderate / Improving</strong>
-            <p>Some resilience measures are present, but remaining gaps should be monitored.</p>
-          </div>
-          <div class="guide-score-card strong-guide">
-            <span>76–100</span>
-            <strong>Strong Heat Resilience</strong>
-            <p>The school appears relatively better prepared based on the submitted data.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="guide-layout">
-      <div class="guide-panel">
-        <div class="section-kicker">Category explanation</div>
-        <h2>What the Three Categories Mean</h2>
-        <div class="guide-category-grid">
-          <div class="guide-category-card guide-environment">
-            <h3>Environment</h3>
-            <p>Looks at the surrounding outdoor conditions, such as tree canopy, green space access, and local surface temperature.</p>
-          </div>
-          <div class="guide-category-card guide-built">
-            <h3>Built Environment</h3>
-            <p>Looks at school building features, such as ventilation, cooling, shading, road exposure, and roof treatment.</p>
-          </div>
-          <div class="guide-category-card guide-socio">
-            <h3>Socio-economic / Preparedness</h3>
-            <p>Looks at vulnerability and readiness, such as pupil needs, travel exposure, staff training, hydration support, and communication.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="guide-layout">
-      <div class="guide-panel">
-        <div class="section-kicker">Important note</div>
-        <h2>Prototype Data Notice</h2>
-        <p>
-          The dashboard is currently pre-filled with illustrative demo values so the prototype can show different map colours and ranking outcomes.
-          These values should be replaced with real school-submitted or verified data before being used for formal decision-making.
-        </p>
-      </div>
-    </section>
-  </main>
-
-
-  <main id="inputPage" class="page-section">
+  <main id="inputPage" class="page-section active-page">
     <section class="input-layout">
       <div class="input-panel">
         <div class="section-kicker">School submission form</div>
@@ -186,63 +80,42 @@
         <h2>How to Read the Score</h2>
         <p>This dashboard combines school inputs into one overall <strong>Net Heat Resilience Score</strong>. It is designed to give users a quick view of which schools may need the most heat-resilience support.</p>
 
-        <div class="accordion-group">
-          <details class="accordion-item" open>
-            <summary>
-              <div>
-                <strong>What the main score means</strong>
-                <span>Click to expand or collapse</span>
-              </div>
-            </summary>
-            <div class="accordion-content">
-              <ul class="method-list">
-                <li><strong>76–100:</strong> Strong heat resilience</li>
-                <li><strong>51–75:</strong> Moderate / improving</li>
-                <li><strong>26–50:</strong> High concern</li>
-                <li><strong>0–25:</strong> Very high concern</li>
-              </ul>
-              <p class="small">Higher values mean the school appears more prepared for heat risk. Lower values mean higher concern and greater priority for support.</p>
-            </div>
-          </details>
+        <div class="method-explain-grid">
+          <div class="method-card">
+            <h3>What the main score means</h3>
+            <ul class="method-list">
+              <li><strong>76–100:</strong> Strong heat resilience</li>
+              <li><strong>51–75:</strong> Moderate / improving</li>
+              <li><strong>26–50:</strong> High concern</li>
+              <li><strong>0–25:</strong> Very high concern</li>
+            </ul>
+            <p class="small">Higher values mean the school appears more prepared for heat risk. Lower values mean higher concern and greater priority for support.</p>
+          </div>
 
-          <details class="accordion-item">
-            <summary>
-              <div>
-                <strong>What the three category scores mean</strong>
-                <span>Click to expand or collapse</span>
-              </div>
-            </summary>
-            <div class="accordion-content">
-              <ul class="method-list">
-                <li><strong>Environment:</strong> surrounding heat exposure, tree canopy, green space, and local temperature conditions.</li>
-                <li><strong>Built Environment:</strong> building features such as ventilation, shading, roof treatment, water access, and cooling provision.</li>
-                <li><strong>Socio-economic / Preparedness:</strong> training, communication, operational planning, and wider school preparedness.</li>
-              </ul>
-              <p class="small">These coloured boxes show how each category is affecting the school's overall score. More negative values mean that category is currently dragging the score down.</p>
-            </div>
-          </details>
+          <div class="method-card">
+            <h3>What the three category scores mean</h3>
+            <ul class="method-list">
+              <li><strong>Environment:</strong> surrounding heat exposure, tree canopy, green space, and local temperature conditions.</li>
+              <li><strong>Built Environment:</strong> building features such as ventilation, shading, roof treatment, water access, and cooling provision.</li>
+              <li><strong>Socio-economic / Preparedness:</strong> training, communication, operational planning, and wider school preparedness.</li>
+            </ul>
+            <p class="small">These coloured boxes show how each category is affecting the school's overall score. More negative values mean that category is currently dragging the score down.</p>
+          </div>
+        </div>
 
-          <details class="accordion-item">
-            <summary>
-              <div>
-                <strong>How the score is calculated</strong>
-                <span>Click to expand or collapse</span>
-              </div>
-            </summary>
-            <div class="accordion-content">
-              <ol class="method-steps">
-                <li>Each criterion is scored using the index rules. <strong>Negative criteria</strong> use <strong>0, -0.5, or -1</strong>. <strong>Positive criteria</strong> use <strong>0, 0.5, or 1</strong>.</li>
-                <li>Each criterion score is multiplied by its <strong>weight</strong> to create a contribution.</li>
-                <li>Contributions are added within the three categories and then combined into a <strong>Final Raw Score</strong>.</li>
-                <li>The raw score is then converted into the <strong>Net Heat Resilience Score (0–100)</strong> shown on the left.</li>
-              </ol>
-              <div class="formula-row">
-                <div class="formula-card"><strong>Contribution</strong><code>Weight × Score</code></div>
-                <div class="formula-card"><strong>Final Raw Score</strong><code>Total Positive Score + Total Negative Score</code></div>
-                <div class="formula-card"><strong>Net Heat Resilience Score</strong><code>(Final Raw Score + 0.5) × 100</code></div>
-              </div>
-            </div>
-          </details>
+        <div class="method-card wide">
+          <h3>How the score is calculated</h3>
+          <ol class="method-steps">
+            <li>Each criterion is scored using the index rules. <strong>Negative criteria</strong> use <strong>0, -0.5, or -1</strong>. <strong>Positive criteria</strong> use <strong>0, 0.5, or 1</strong>.</li>
+            <li>Each criterion score is multiplied by its <strong>weight</strong> to create a contribution.</li>
+            <li>Contributions are added within the three categories and then combined into a <strong>Final Raw Score</strong>.</li>
+            <li>The raw score is then converted into the <strong>Net Heat Resilience Score (0–100)</strong> shown on the left.</li>
+          </ol>
+          <div class="formula-row">
+            <div class="formula-card"><strong>Contribution</strong><code>Weight × Score</code></div>
+            <div class="formula-card"><strong>Final Raw Score</strong><code>Total Positive Score + Total Negative Score</code></div>
+            <div class="formula-card"><strong>Net Heat Resilience Score</strong><code>(Final Raw Score + 0.5) × 100</code></div>
+          </div>
         </div>
       </div>
     </section>
