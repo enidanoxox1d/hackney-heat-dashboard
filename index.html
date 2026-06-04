@@ -17,6 +17,8 @@
       <select id="perspectiveSelect" class="perspective-select">
         <option value="input">Step 1: 📝 School Data Input</option>
         <option value="map">Step 2: 🗺️ Map Dashboard</option>
+        <option disabled>──────────────</option>
+        <option value="guide">🧭 How to Use This Dashboard</option>
       </select>
     </div>
   </header>
@@ -199,6 +201,124 @@
       </details>
     </section>
   </main>
+
+
+  <main id="guidePage" class="page-section">
+    <section class="guide-hero">
+      <div class="section-kicker">User guide</div>
+      <h2>How to Use This Dashboard</h2>
+      <p>
+        This page explains the full workflow in a simple way. The dashboard is designed for schools, local partners,
+        or project reviewers to understand how heat-risk data becomes a school priority map.
+      </p>
+    </section>
+
+    <section class="guide-flow">
+      <div class="guide-step-card">
+        <div class="guide-step-number">1</div>
+        <div>
+          <h3>Select a school</h3>
+          <p>
+            Start from <strong>Step 1: School Data Input</strong>. Choose one of the Hackney schools from the dropdown menu.
+            The form will show the current input values for that school.
+          </p>
+        </div>
+      </div>
+
+      <div class="guide-step-card">
+        <div class="guide-step-number">2</div>
+        <div>
+          <h3>Score each criterion</h3>
+          <p>
+            Open the Environment, Built Environment, and Socio-economic / Preparedness sections.
+            For each row, choose the score that best matches the school’s situation.
+          </p>
+          <div class="mini-score-guide">
+            <span><strong>Negative criteria:</strong> 0, -0.5, or -1</span>
+            <span><strong>Positive criteria:</strong> 0, 0.5, or 1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-step-card">
+        <div class="guide-step-number">3</div>
+        <div>
+          <h3>Read the Net Heat Resilience Score</h3>
+          <p>
+            The dashboard automatically calculates the school’s <strong>Net Heat Resilience Score</strong>.
+            A higher score means stronger heat resilience. A lower score means higher concern and greater need for support.
+          </p>
+        </div>
+      </div>
+
+      <div class="guide-step-card">
+        <div class="guide-step-number">4</div>
+        <div>
+          <h3>Save the school profile</h3>
+          <p>
+            Click <strong>Save school score</strong> after changing the input values.
+            This updates the school’s result, map marker, selected-school profile, and priority ranking.
+          </p>
+        </div>
+      </div>
+
+      <div class="guide-step-card">
+        <div class="guide-step-number">5</div>
+        <div>
+          <h3>Go to the map dashboard</h3>
+          <p>
+            Open <strong>Step 2: Map Dashboard</strong>. Click a marker or search for a school name.
+            The side panel will explain the selected school’s score in a more qualitative way.
+          </p>
+        </div>
+      </div>
+
+      <div class="guide-step-card">
+        <div class="guide-step-number">6</div>
+        <div>
+          <h3>Use the ranking for prioritisation</h3>
+          <p>
+            The ranking table places the schools with the lowest heat resilience scores first.
+            The top three schools are shown immediately, while the remaining schools can be expanded below.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-two-column">
+      <div class="guide-panel">
+        <div class="section-kicker">How to interpret the score</div>
+        <h3>Score bands</h3>
+        <div class="guide-band-list">
+          <div class="guide-band very-high-band"><strong>0–25</strong><span>Very high concern</span></div>
+          <div class="guide-band high-band"><strong>26–50</strong><span>High concern</span></div>
+          <div class="guide-band moderate-band"><strong>51–75</strong><span>Moderate / improving</span></div>
+          <div class="guide-band strong-band"><strong>76–100</strong><span>Strong heat resilience</span></div>
+        </div>
+      </div>
+
+      <div class="guide-panel">
+        <div class="section-kicker">What users should remember</div>
+        <h3>Important notes</h3>
+        <ul class="guide-notes">
+          <li>This is a prototype, so the current values are illustrative demo values unless replaced with real school data.</li>
+          <li>The score is not meant to blame schools. It helps identify where support, investment, or planning may be most needed.</li>
+          <li>The map and ranking are only as accurate as the input data, so data should be reviewed before final decision-making.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="guide-example">
+      <div class="section-kicker">Example workflow</div>
+      <h3>Example: using the dashboard during a review meeting</h3>
+      <p>
+        A school staff member selects their school, fills in the three categories, saves the score, and then opens the map.
+        The project team can then compare schools, identify the top-priority sites, and discuss which category is driving concern:
+        local environment, building conditions, or preparedness.
+      </p>
+    </section>
+  </main>
+
 
   <footer>Climate Future Lab Group 3 · Hackney School Heat Resilience Dashboard</footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
