@@ -613,9 +613,3 @@
     min-height: 0;
   }
 }
-
-
-/* Simplified user guide page after removing score scale and example workflow */
-#guidePage .guide-flow {
-  margin-bottom: 48px;
-}
