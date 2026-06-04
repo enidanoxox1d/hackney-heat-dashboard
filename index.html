@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hackney School Heat Vulnerability Dashboard</title>
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -12,158 +11,125 @@
   <header>
     <div class="header-meta">Climate Future Lab Group 3 · Track 1 London 2030</div>
     <h1>Hackney School Heat Vulnerability Dashboard</h1>
-    <p>
-      A decision-support prototype for identifying Hackney schools most vulnerable to extreme heat and linking risk scores to short-term response actions.
-    </p>
+    <p>A decision-support prototype for schools to input heat-risk data, calculate a net vulnerability score, and visualise priority schools across Hackney.</p>
+    <nav class="page-tabs">
+      <button class="tab-button active" id="inputTabButton">School Data Input</button>
+      <button class="tab-button" id="mapTabButton">Map Dashboard</button>
+    </nav>
   </header>
 
   <section class="cards">
-    <div class="card">
-      <span class="card-label">Schools shown</span>
-      <h2 id="school-count">0</h2>
-    </div>
-    <div class="card">
-      <span class="card-label">Very high risk</span>
-      <h2 id="very-high-count">0</h2>
-    </div>
-    <div class="card">
-      <span class="card-label">Average score</span>
-      <h2 id="average-score">0</h2>
-    </div>
-    <div class="card">
-      <span class="card-label">Priority schools</span>
-      <h2 id="priority-count">0</h2>
-    </div>
+    <div class="card"><span class="card-label">Schools shown</span><h2 id="school-count">0</h2></div>
+    <div class="card"><span class="card-label">Very high risk</span><h2 id="very-high-count">0</h2></div>
+    <div class="card"><span class="card-label">Average vulnerability</span><h2 id="average-score">0</h2></div>
+    <div class="card"><span class="card-label">Priority schools</span><h2 id="priority-count">0</h2></div>
   </section>
 
-  <main class="dashboard">
-    <section class="control-panel">
-      <div class="section-kicker">Scenario weighting</div>
-      <h2>Priority Controls</h2>
-      <p class="small">
-        Adjust the sliders to test how different policy priorities affect school ranking and mapped vulnerability.
-      </p>
-
-      <label>Overheating risk <strong id="overheatingWeightValue">25</strong>%</label>
-      <input type="range" id="overheatingWeight" min="0" max="50" value="25">
-
-      <label>Tree canopy / shade <strong id="canopyWeightValue">15</strong>%</label>
-      <input type="range" id="canopyWeight" min="0" max="40" value="15">
-
-      <label>Major road exposure <strong id="roadWeightValue">15</strong>%</label>
-      <input type="range" id="roadWeight" min="0" max="40" value="15">
-
-      <label>Water access <strong id="waterWeightValue">15</strong>%</label>
-      <input type="range" id="waterWeight" min="0" max="40" value="15">
-
-      <label>Preparedness <strong id="preparednessWeightValue">20</strong>%</label>
-      <input type="range" id="preparednessWeight" min="0" max="40" value="20">
-
-      <label>Travel exposure <strong id="travelWeightValue">10</strong>%</label>
-      <input type="range" id="travelWeight" min="0" max="30" value="10">
-
-      <hr>
-
-      <div class="section-kicker">Filters</div>
-
-      <label class="checkbox-label">
-        <input type="checkbox" id="showOnlyHighRisk">
-        <span>Show only high / very high risk schools</span>
-      </label>
-
-      <label>Minimum score <strong id="minScoreValue">0</strong></label>
-      <input type="range" id="minScore" min="0" max="100" value="0">
-
-      <button id="resetButton">Reset controls</button>
-    </section>
-
-    <section class="map-section">
-      <div class="section-kicker">Spatial diagnosis</div>
-      <h2>School Vulnerability Map</h2>
-
-      <div class="search-box">
-        <input type="text" id="schoolSearch" placeholder="Search school name, e.g. Orchard" autocomplete="off">
-        <button id="searchButton">Search</button>
+  <main id="inputPage" class="page-section active-page">
+    <section class="input-layout">
+      <div class="input-panel">
+        <div class="section-kicker">School submission form</div>
+        <h2>Input School Heat-Risk Data</h2>
+        <p class="small">Select a school, enter scores for vulnerability burden and adaptation actions, then save the result. Scores: 0 = low / absent, 0.5 = partial / medium, 1 = high / present.</p>
+        <label class="input-label" for="schoolSelect">Select school</label>
+        <select id="schoolSelect"></select>
+        <div class="score-summary">
+          <div><span>Total Negative Score</span><strong id="negativeTotalDisplay">0.00</strong></div>
+          <div><span>Total Positive Score</span><strong id="positiveTotalDisplay">0.00</strong></div>
+          <div><span>Final Raw Score</span><strong id="rawScoreDisplay">0.00</strong></div>
+          <div><span>Final Vulnerability Score</span><strong id="vulnerabilityScoreDisplay">0</strong></div>
+        </div>
+        <div class="risk-result">
+          <span id="riskBadge" class="badge moderate">Moderate</span>
+          <p id="riskExplanation">Complete the scoring fields below and save the school profile.</p>
+        </div>
+        <div class="form-actions">
+          <button id="saveSchoolButton">Save school score</button>
+          <button id="resetSchoolButton" class="secondary-button">Reset selected school</button>
+        </div>
       </div>
-      <div id="searchMessage" class="search-message"></div>
 
-      <div id="map"></div>
-      <div class="legend">
-        <strong>Risk level</strong>
-        <span><i class="low"></i> Low</span>
-        <span><i class="moderate"></i> Moderate</span>
-        <span><i class="high"></i> High</span>
-        <span><i class="very-high"></i> Very High</span>
+      <div class="method-panel">
+        <div class="section-kicker">Method</div>
+        <h2>How the Score Works</h2>
+        <p>Negative factors create a vulnerability burden. Positive adaptation actions reduce that burden.</p>
+        <div class="formula-card"><strong>Final Raw Score</strong><code>Total Positive Score + Total Negative Score</code></div>
+        <div class="formula-card"><strong>Final Vulnerability Score</strong><code>100 - (((Final Raw Score + 1) / 2) × 100)</code></div>
+        <p class="small">A higher vulnerability score means the school is more exposed or less prepared. This keeps the map intuitive: higher score = higher risk.</p>
       </div>
     </section>
 
-    <section class="side-panel">
-      <div class="section-kicker">School profile</div>
-      <h2>Selected School</h2>
-      <div id="school-details">
-        <p>Click a school marker or table row to view its heat vulnerability profile.</p>
+    <section class="score-table-section">
+      <div class="section-kicker">Section 1</div>
+      <h2>Negative Score Section: Vulnerability Burden</h2>
+      <div class="table-scroll">
+        <table id="negativeScoreTable">
+          <thead><tr><th>Vulnerability factor</th><th>Weight</th><th>Measured value</th><th>Scoring rule</th><th>Score</th><th>Contribution</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="score-table-section">
+      <div class="section-kicker">Section 2</div>
+      <h2>Positive Score Section: Adaptation Actions</h2>
+      <div class="table-scroll">
+        <table id="positiveScoreTable">
+          <thead><tr><th>Category</th><th>Action</th><th>Weight</th><th>Measured value</th><th>Scoring rule</th><th>Score</th><th>Contribution</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </div>
     </section>
   </main>
 
-  <section class="response-plan">
-    <div class="section-kicker">Operational response</div>
-    <h2>Temperature-Triggered Response Plan</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Temperature threshold</th>
-          <th>Recommended response</th>
-        </tr>
-      </thead>
+  <main id="mapPage" class="page-section">
+    <section class="map-dashboard">
+      <section class="map-section">
+        <div class="section-kicker">Spatial diagnosis</div>
+        <h2>School Vulnerability Map</h2>
+        <div class="search-box">
+          <input type="text" id="schoolSearch" placeholder="Search school name, e.g. Orchard" autocomplete="off">
+          <button id="searchButton">Search</button>
+        </div>
+        <div id="searchMessage" class="search-message"></div>
+        <div id="map"></div>
+        <div class="legend">
+          <strong>Risk level</strong>
+          <span><i class="low"></i> Low</span>
+          <span><i class="moderate"></i> Moderate</span>
+          <span><i class="high"></i> High</span>
+          <span><i class="very-high"></i> Very High</span>
+        </div>
+      </section>
+      <section class="side-panel">
+        <div class="section-kicker">School profile</div>
+        <h2>Selected School</h2>
+        <div id="school-details"><p>Click a school marker or table row to view its heat vulnerability profile.</p></div>
+      </section>
+    </section>
+
+    <section class="response-plan">
+      <div class="section-kicker">Operational response</div>
+      <h2>Temperature-Triggered Response Plan</h2>
+      <table><thead><tr><th>Temperature threshold</th><th>Recommended response</th></tr></thead>
       <tbody>
-        <tr>
-          <td>26°C+</td>
-          <td>Hydration reminders, shaded breaks, check classroom ventilation.</td>
-        </tr>
-        <tr>
-          <td>28°C+</td>
-          <td>Move PE and outdoor activities away from 11am–3pm.</td>
-        </tr>
-        <tr>
-          <td>30°C+</td>
-          <td>Water breaks every 30 minutes and use cooled rooms where available.</td>
-        </tr>
-        <tr>
-          <td>32°C+</td>
-          <td>Restrict outdoor activities and check vulnerable pupils.</td>
-        </tr>
-        <tr>
-          <td>35°C+</td>
-          <td>Activate emergency heat protocol and consider remote/flexible learning for vulnerable pupils.</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+        <tr><td>26°C+</td><td>Hydration reminders, shaded breaks, check classroom ventilation.</td></tr>
+        <tr><td>28°C+</td><td>Move PE and outdoor activities away from 11am–3pm.</td></tr>
+        <tr><td>30°C+</td><td>Water breaks every 30 minutes and use cooled rooms where available.</td></tr>
+        <tr><td>32°C+</td><td>Restrict outdoor activities and check vulnerable pupils.</td></tr>
+        <tr><td>35°C+</td><td>Activate emergency heat protocol and consider remote/flexible learning for vulnerable pupils.</td></tr>
+      </tbody></table>
+    </section>
 
-  <section class="ranking">
-    <div class="section-kicker">Prioritisation output</div>
-    <h2>School Vulnerability Ranking</h2>
-    <p class="small">The ranking updates automatically when slider weights or filters are changed.</p>
-    <table id="ranking-table">
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>School</th>
-          <th>Updated score</th>
-          <th>Risk level</th>
-          <th>Top driver</th>
-          <th>Priority action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
+    <section class="ranking">
+      <div class="section-kicker">Prioritisation output</div>
+      <h2>School Vulnerability Ranking</h2>
+      <p class="small">The ranking updates after schools save their input data.</p>
+      <table id="ranking-table"><thead><tr><th>Rank</th><th>School</th><th>Vulnerability score</th><th>Risk level</th><th>Final raw score</th><th>Priority action</th></tr></thead><tbody></tbody></table>
+    </section>
+  </main>
 
-  <footer>
-    Climate Future Lab Group 3 · Hackney School Heat Vulnerability Dashboard
-  </footer>
-
+  <footer>Climate Future Lab Group 3 · Hackney School Heat Vulnerability Dashboard</footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
