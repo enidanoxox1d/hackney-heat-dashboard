@@ -6,6 +6,7 @@ const storageKey = "hackneyThreeCategoryScoresV1";
 let savedScores = JSON.parse(localStorage.getItem(storageKey) || "{}");
 let currentSchools = [];
 let markerBySchoolName = {};
+let openCriteriaCategories = new Set();
 
 const map = L.map("map").setView([51.548, -0.060], 13);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -129,7 +130,7 @@ function renderCategoryTables() {
     const section = document.createElement("section");
     section.className = "score-table-section criteria-accordion-section";
     section.innerHTML = `
-      <details class="criteria-accordion">
+      <details class="criteria-accordion" ${openCriteriaCategories.has(category) ? "open" : ""}>
         <summary>
           <div class="criteria-summary-text">
             <div class="section-kicker">${category}</div>
@@ -179,6 +180,14 @@ function renderCategoryTables() {
     container.appendChild(section);
   });
 
+  document.querySelectorAll(".criteria-accordion").forEach(details => {
+    details.addEventListener("toggle", () => {
+      const category = details.querySelector(".section-kicker").textContent.trim();
+      if (details.open) openCriteriaCategories.add(category);
+      else openCriteriaCategories.delete(category);
+    });
+  });
+
   document.querySelectorAll(".score-select").forEach(select => select.addEventListener("change", handleScoreChange));
   updateInputSummary();
 }
@@ -189,6 +198,9 @@ function handleScoreChange(event) {
   const key = event.target.dataset.key;
   const value = Number(event.target.value);
   const current = JSON.parse(JSON.stringify(getSchoolScoreData(schoolName)));
+
+  const changedCriterion = criteria.find(c => c.key === key);
+  if (changedCriterion) openCriteriaCategories.add(changedCriterion.category);
 
   if (type === "Negative") current.negative[key] = value;
   else current.positive[key] = value;
@@ -516,7 +528,7 @@ document.getElementById("perspectiveSelect").addEventListener("change", e => {
   else if (e.target.value === "map") showMapPage();
   else showGuidePage();
 });
-document.getElementById("schoolSelect").addEventListener("change", renderCategoryTables);
+document.getElementById("schoolSelect").addEventListener("change", () => { openCriteriaCategories.clear(); renderCategoryTables(); });
 document.getElementById("saveSchoolButton").addEventListener("click", saveCurrentSchool);
 document.getElementById("resetSchoolButton").addEventListener("click", resetCurrentSchool);
 document.getElementById("searchButton").addEventListener("click", searchSchool);
